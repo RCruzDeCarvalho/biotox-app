@@ -1,4 +1,4 @@
-# Reagentes BIOTOX
+# Stocks BIOTOX
 
 Versão instalável da app de reagentes e consumíveis do Laboratório de Biomonitorização e Ecotoxicologia (BIOTOX).
 

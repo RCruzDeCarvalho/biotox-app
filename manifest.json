@@ -1,7 +1,7 @@
 {
-  "name": "Reagentes BIOTOX",
+  "name": "Stocks BIOTOX",
   "short_name": "BIOTOX",
-  "description": "Reagentes e consumíveis do laboratório BIOTOX",
+  "description": "Stocks de reagentes e consumíveis do laboratório BIOTOX",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
