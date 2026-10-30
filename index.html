@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reagentes BIOTOX</title>
+<meta name="theme-color" content="#0d5c6e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BIOTOX">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  html,body{margin:0;height:100%;background:#0f161b}
+  body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);box-sizing:border-box}
+  iframe{border:0;width:100%;height:100%;display:block;background:#0f161b}
+  #off{display:none;color:#e4ebef;font:16px system-ui,sans-serif;text-align:center;padding:30vh 24px 0}
+</style>
+</head>
+<body>
+<!-- O link da app está no ficheiro config.js -->
+<iframe id="app" title="Reagentes BIOTOX" allow="clipboard-write"></iframe>
+<div id="off">Sem ligação à internet.<br>A app precisa de rede para ler a folha do laboratório.</div>
+<script src="config.js"></script>
+<script>
+  const U = window.BIOTOX_APP_URL || "";
+  if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(U)) { document.getElementById("off").innerHTML = "Falta pôr o link da app no ficheiro config.js."; document.getElementById("off").style.display = "block"; document.getElementById("app").style.display = "none"; }
+  else document.getElementById("app").src = U;
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+  function net(){ const on = navigator.onLine; document.getElementById('app').style.display = on ? 'block' : 'none'; document.getElementById('off').style.display = on ? 'none' : 'block'; }
+  addEventListener('online', () => { net(); document.getElementById('app').src = document.getElementById('app').src; });
+  addEventListener('offline', net); if (U.endsWith('/exec')) net();
+</script>
+</body>
+</html>
