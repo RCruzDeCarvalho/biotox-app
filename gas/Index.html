@@ -134,6 +134,20 @@ a.ext:hover{background:var(--accent-soft)}
 .rw{display:flex;align-items:stretch;border-bottom:1px solid var(--line)}.rw:last-child{border-bottom:none}.rw .row{flex:1;min-width:0;border-bottom:none}
 .pick{display:flex;align-items:center;padding:0 4px 0 12px;cursor:pointer}.pick input{width:20px;height:20px;accent-color:var(--accent);cursor:pointer}
 .crow{grid-template-columns:auto minmax(0,1fr) auto!important}.crow .sub{grid-column:2/3!important}.crow .pick{grid-row:1/3;padding:0 2px 0 0}
+.th{flex:none;position:relative;width:46px;height:46px;margin:8px 2px 8px 6px;border-radius:8px;border:1.5px dashed var(--line);background:transparent;padding:0;overflow:hidden;display:block;cursor:pointer;align-self:center;min-height:0}
+.th.has{border:1px solid var(--line);background:#fff}.th.ro:not(.has){cursor:default}.th img{width:100%;height:100%;object-fit:cover;display:block}
+.th em{position:absolute;right:2px;bottom:2px;background:rgba(0,0,0,.7);color:#fff;font:600 10px/1 system-ui,sans-serif;padding:2px 4px;border-radius:6px;font-style:normal}
+.crow{grid-template-columns:auto auto minmax(0,1fr) auto!important}.crow .sub{grid-column:3/4!important}.crow .th{grid-row:1/3;margin:0 4px 0 0}
+.gal h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px}.gthumbs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.gt{position:relative}.gt .th{width:84px;height:84px;margin:0}.gx{position:absolute;top:-8px;right:-8px;min-width:26px;height:26px;padding:0 7px;border-radius:13px;font-size:15px;line-height:1;background:var(--ink);color:var(--bg);border:none}
+.gx.sure{background:var(--hz-inf);color:#fff;font-size:12px}.gnone{color:var(--muted);font-size:14px}.gal .links{display:flex;gap:8px;flex-wrap:wrap}
+.ovl{position:fixed;inset:0;z-index:25;background:rgba(5,10,14,.94);display:flex;align-items:center;justify-content:center}.ovl[hidden]{display:none}
+#lb img{max-width:100%;max-height:calc(100% - 120px);object-fit:contain;border-radius:6px;background:#fff}
+.lbtop{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;color:#e4ebef;font-size:14px}
+.lbn{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;font-size:30px;line-height:1;padding:0;background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:8px}.lbn.p{left:8px}.lbn.n{right:8px}
+.lbdrive{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);color:#9fd3df;font-size:14px}
+.phbox{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:18px;width:min(340px,calc(100% - 32px));display:flex;flex-direction:column;gap:10px}.phbox span{color:var(--muted);font-size:14px;margin-top:-6px}
+.prog{position:fixed;left:50%;transform:translateX(-50%);top:calc(8px + env(safe-area-inset-top,0px));z-index:31;background:var(--accent);color:var(--accent-ink);padding:7px 14px;border-radius:999px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.3);max-width:calc(100% - 32px)}
 .ptitle{font-size:22px;margin:4px 0 6px}.pintro{color:var(--muted);margin:0 0 14px;font-size:14px}.sech{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
 .orow,.arow{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}.orow:last-child,.arow:last-child{border-bottom:none}
 .oname{flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:2px}.oname span{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
@@ -240,7 +254,7 @@ const DICT={
 "Falta a quantidade a encomendar em algum artigo.":"An item is missing the quantity to order.","Encomenda exportada":"Order exported","Encomenda":"Order",
 "Guardada no arquivo, na pasta “Encomendas exportadas” do Drive.":"Saved to the archive, in the “Encomendas exportadas” folder on Drive.","Imagem da encomenda":"Order image",
 "No telemóvel, mantém o dedo na imagem para a guardar ou partilhar.":"On a phone, press and hold the image to save or share it.","Partilhar":"Share","Descarregar":"Download","Abrir no Drive":"Open in Drive","Esvaziar a lista":"Empty the list",
-"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Lista esvaziada.":"List emptied.",
+"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
 "A abrir o arquivo":"Opening the archive","A ler a pasta de encomendas no Drive…":"Reading the orders folder on Drive…","Não foi possível abrir o arquivo":"Could not open the archive",
 "Encomendas exportadas, da mais recente para a mais antiga.":"Exported orders, newest first.","Abrir a pasta no Drive":"Open the folder in Drive","Ver":"View","Apagar":"Delete",
 "Ainda não há exportações":"No exports yet","Quando exportares uma encomenda, a imagem fica guardada aqui.":"When you export an order, the image is saved here.",
@@ -296,6 +310,7 @@ const DICT={
 "Módulo":"Module","Vista":"View","Vista de consumíveis":"Consumables view","Local":"Location","Mínimo":"Minimum","FDS":"SDS","FDS associada":"SDS linked","FDS removida":"SDS removed"
 };
 const RX=[
+[/^A enviar fotografia (\d+) de (\d+)…$/,(m,a,b)=>`Uploading photo ${a} of ${b}…`],[/^(\d+) fotografias guardadas\.$/,(m,a)=>`${a} photos saved.`],[/^A importar as fotografias dos reagentes… (\d+)\/(\d+)$/,(m,a,b)=>`Importing reagent photos… ${a}/${b}`],[/^Fotografias importadas, (\d+) não deu\.$/,(m,a)=>`Photos imported, ${a} failed.`],[/^Não consegui ler a imagem ?(.*)$/,(m,a)=>`Could not read the image ${a}`],
 [/^Stocks BIOTOX · versão (.+)$/,(m,a)=>`Stocks BIOTOX · version ${a}`],
 [/^(\d+) artigos na encomenda$/,(m,a)=>`${a} items in the order`],[/^(\d+) na lista$/,(m,a)=>`${a} in the list`],[/^(\d+) exportações$/,(m,a)=>`${a} exports`],
 [/^Olá, (.+)$/,(m,a)=>`Hello, ${a}`],[/^(\d+) artigos · (\d+) em falta$/,(m,a,b)=>`${a} items · ${b} low`],[/^(\d+) frascos activos$/,(m,a)=>`${a} active bottles`],
@@ -362,7 +377,7 @@ function filtered(){
 }
 function rowHTML(it){
   const move=!it.moved&&it.cur&&it.cur!==`${it.cab}-${it.shelf}`;
-  return `<div class="rw">${pickBox("r",it.code)}<button class="row" data-code="${esc(it.code)}" style="--hz:${hzVar(it.hazard)}">
+  return `<div class="rw">${pickBox("r",it.code)}${thumbHTML("r",it.code,it.photo)}<button class="row" data-code="${esc(it.code)}" style="--hz:${hzVar(it.hazard)}">
     <span class="code">${esc(it.code)}</span><span class="nm">${esc(it.name)}</span>
     <span class="loc">${move?`<span>${esc(it.cur)}</span> <span class="to">→ ${esc(locTxt(it))}</span>`:esc(locTxt(it))}</span>
     <span class="sub"><span class="pill"><i></i>${esc(it.hazard)}</span>${it.qty?`<span>${esc(it.qty)}</span>`:""}${it.brand?`<span>${esc(it.brand)}</span>`:""}
@@ -411,7 +426,7 @@ function fdsLinks(it){
 }
 function shelfOptions(cab,cur){const l=[...(SHELVES[cab]||[])];if(cur&&!l.includes(cur))l.push(cur);return l.map(s=>`<option ${s===cur?"selected":""}>${esc(s)}</option>`).join("")}
 function closeSheet(){$("#sheet").hidden=true;$("#scrim").hidden=true;openCode=null}
-$("#scrim").onclick=closeSheet;document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+$("#scrim").onclick=closeSheet;document.addEventListener("keydown",e=>{const lb=$("#lb");if(lb&&!lb.hidden){if(e.key==="Escape")fecharLb();else if(e.key==="ArrowLeft")lbPasso(-1);else if(e.key==="ArrowRight")lbPasso(1);return}const m=$("#phm");if(m&&!m.hidden&&e.key==="Escape"){m.hidden=true;return}if(e.key==="Escape")closeSheet()});
 
 function openSheet(code){if(String(code).startsWith("CON-")){openCons(code);return}if(!String(code).startsWith("BTX-"))return;
   const it=items.find(i=>i.code===code);if(!it){toast("Este código já não existe no catálogo.");return}
@@ -423,7 +438,8 @@ function openSheet(code){if(String(code).startsWith("CON-")){openCons(code);retu
   ${move?`<div class="banner">Está agora em <b>${esc(it.cur)}</b> e vai para <b>${esc(locTxt(it))}</b>. <button id="bMoved" style="margin-left:6px">Já está arrumado</button></div>`:""}
   <div class="labelcard"><span class="code">${esc(it.code)}</span><span>${esc(it.name)}</span><span style="font-size:12px;color:var(--muted)">CAS ${esc(it.cas||"—")} · ${esc(it.hazard)}</span></div>
   <dl class="kv"><dt>Grupo</dt><dd>${esc(it.group)} · ${esc(g[1])}</dd><dt>CAS</dt><dd>${esc(it.cas||"—")}</dd><dt>Marca</dt><dd>${esc(it.brand||"—")} ${it.ref?"· "+esc(it.ref):""}</dd>
-  <dt>Código antigo</dt><dd>${esc(it.old||"—")}</dd><dt>Foto</dt><dd>${esc(it.photo||"—")}</dd></dl>
+  <dt>Código antigo</dt><dd>${esc(it.old||"—")}</dd></dl>
+  <div id="gal" class="gal" data-k="r" data-id="${esc(it.code)}"></div>
   <div class="fds"><h3>Ficha de dados de segurança</h3>
     <div class="links">${it.sds?`<a class="ext" href="${esc(it.sds)}" target="_blank" rel="noopener">Abrir FDS (PDF)</a>`:`<span style="color:var(--muted);font-size:14px">Ainda sem FDS associada.</span>`}</div>
     <div class="links">${fdsLinks(it)}</div>
@@ -445,7 +461,7 @@ function openSheet(code){if(String(code).startsWith("CON-")){openCons(code);retu
   </form>
   <div><h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px">Histórico deste frasco</h3><div class="hist" id="hOne"></div></div>`;
   s.hidden=false;$("#scrim").hidden=false;
-  $("#xClose").onclick=closeSheet;
+  $("#xClose").onclick=closeSheet;ligarGaleria();
   $("#eCab").onchange=e=>{$("#eShelf").innerHTML=shelfOptions(e.target.value,"")};
   $("#bSds").onclick=()=>{const u=$("#eSds").value.trim();if(u===(it.sds||"")){toast("O link é o mesmo.");return}
     if(u&&!/^https:\/\//.test(u)){toast("Cola um link que comece por https:\/\/");return}
@@ -471,7 +487,7 @@ async function renderOneHist(code){
 }
 function call(fn,...args){return new Promise((res,rej)=>google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...args))}
 function errMsg(e){const m=String(e&&e.message||e);if(m.includes("CODIGO_ERRADO")){logout();return "O código do laboratório mudou. Entra outra vez."}if(m.includes("SO_CONSULTA"))return "Entraste só para consulta, não podes mudar nada.";return "Não foi possível guardar. "+m.replace(/^Error:\s*/,"")}
-function applyData(d){cons=d.cons||[];if(d.defs)DEFS=d.defs;fillShelves();if(d.papel){PAPEL=d.papel;$("#btnNew").hidden=PAPEL!=="editar"||MODE!=="reag";$("#cNew").hidden=PAPEL!=="editar"||MODE!=="cons";$("#modo").hidden=PAPEL!=="consulta";$("#navSet").hidden=PAPEL!=="editar"}items=d.items.sort((a,b)=>a.code.localeCompare(b.code));hist=d.hist||[];render();if(openCode)renderOneHist(openCode)}
+function applyData(d){cons=d.cons||[];if(d.defs)DEFS=d.defs;fillShelves();if(d.papel){PAPEL=d.papel;$("#btnNew").hidden=PAPEL!=="editar"||MODE!=="reag";$("#cNew").hidden=PAPEL!=="editar"||MODE!=="cons";$("#modo").hidden=PAPEL!=="consulta";$("#navSet").hidden=PAPEL!=="editar"}items=d.items.sort((a,b)=>a.code.localeCompare(b.code));hist=d.hist||[];render();if(openCode)renderOneHist(openCode);if(PAPEL==="editar")setTimeout(importarFotos,1200)}
 async function save(it,patch,txt){
   try{const d=await call("saveItem",PIN,it.code,patch,txt,me);applyData(d);toast("Guardado.");closeSheet()}
   catch(e){toast(errMsg(e))}
@@ -516,7 +532,7 @@ function consFiltered(){const q=norm($("#cq").value.trim()),sh=$("#cShelf").valu
   return cons.filter(c=>{if(sh&&c.cab!==sh)return false;if(low&&!isLow(c))return false;
     if(q){const hay=norm([c.id,c.name,c.type,c.size,c.obs,c.cab,c.shelf].join(" "));return q.split(/\s+/).every(w=>hay.includes(w))}return true})}
 function crowHTML(c){const z=c.qty<=0,l=isLow(c);const ed=PAPEL==="editar";
-  return `<div class="crow ${z?"zero":l?"low":""}" data-id="${esc(c.id)}">${pickBox("c",c.id)}<span class="nm" data-open="${esc(c.id)}">${esc(c.name)}</span>
+  return `<div class="crow ${z?"zero":l?"low":""}" data-id="${esc(c.id)}">${pickBox("c",c.id)}${thumbHTML("c",c.id,c.photo)}<span class="nm" data-open="${esc(c.id)}">${esc(c.name)}</span>
   <span class="qbox">${ed?`<button data-d="-1" aria-label="Retirar um">−</button>`:""}<b>${esc(c.qty)}</b>${ed?`<button data-d="1" aria-label="Repor um">+</button>`:""}</span>
   <span class="sub">${c.size?`<span>${/^\s*(XS|S|M|L|XL|XXL)\s*$/i.test(c.size)?"Tamanho "+esc(c.size):esc(c.size)+" por embalagem"}</span>`:""}<span>${esc(ctab==="list"?c.type||"":[c.cab,c.shelf].filter(Boolean).join(" · "))}</span>${z?`<span class="pill alert">esgotado</span>`:l?`<span class="pill alert">em falta</span>`:""}${c.obs?`<span>${esc(c.obs)}</span>`:""}</span></div>`}
 function renderCons(){const v=$("#view");$("#ctType").setAttribute("aria-pressed",String(ctab==="type"));$("#ctList").setAttribute("aria-pressed",String(ctab==="list"));$("#ctBuy").setAttribute("aria-pressed",String(ctab==="buy"));
@@ -557,9 +573,10 @@ function readConsForm(){const mn=$("#kMin").value.trim();return{type:$("#kType")
 function openCons(id){const c=cons.find(x=>x.id===id);if(!c)return;openCode=null;const s=$("#sheet");s.style.setProperty("--hz","var(--accent)");
   s.innerHTML=`<div class="hd"><div><div class="code">${esc(c.id)}</div><h2>${esc(c.name)}</h2></div><button id="xClose">Fechar</button></div>
   ${PAPEL!=="editar"?`<div class="banner ok">Entraste com o código de consulta. Para mudar alguma coisa, pede o código de edição ao Ricardo.</div>`:""}
+  <div id="gal" class="gal" data-k="c" data-id="${esc(c.id)}"></div>
   <form id="fCons" class="form" onsubmit="return false">${consForm(c)}<div class="actions full"><button type="submit" class="primary" id="kSave">Guardar alterações</button></div></form>
   <div><h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px">Histórico deste artigo</h3><div class="hist" id="hOne"></div></div>`;
-  s.hidden=false;$("#scrim").hidden=false;$("#xClose").onclick=closeSheet;
+  s.hidden=false;$("#scrim").hidden=false;$("#xClose").onclick=closeSheet;ligarGaleria();
   if(PAPEL!=="editar"){s.querySelectorAll("#fCons input,#fCons select,#fCons textarea").forEach(x=>x.disabled=true);$("#kSave").hidden=true}
   $("#fCons").onsubmit=async e=>{e.preventDefault();const p=readConsForm();if(!p.name){toast("O artigo precisa de nome.");return}
     const ch=[];const lab={type:"Tipo",name:"Artigo",cab:"Armário",shelf:"Prateleira",size:"Tamanho",qty:"Quantidade",min:"Mínimo",obs:"Notas"};
@@ -619,6 +636,74 @@ function setMode(m){if(m==="set"&&PAPEL!=="editar")m="home";MODE=m;try{localStor
   ["#rowQ","#rowF","#lnkFds"].forEach(id=>$(id).hidden=m!=="reag");$("#consBar").hidden=m!=="cons";
   $("#btnNew").hidden=m!=="reag"||PAPEL!=="editar";$("#cNew").hidden=m!=="cons"||PAPEL!=="editar";$("#navSet").hidden=PAPEL!=="editar";
   closeSheet();$("#view").dataset.v="";render();updateBadge();try{scrollTo(0,0)}catch(e){}}
+/* ---------- Fotografias ---------- */
+const FOTO_ID=/^[\w-]{20,}$/;
+const fotos=v=>String(v||"").split(/[,\s]+/).filter(x=>FOTO_ID.test(x));
+const fUrl=(id,s)=>`https:\/\/lh3.googleusercontent.com/d/${encodeURIComponent(id)}=s${s}`;
+const fAlt=(id,s)=>`https:\/\/drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=s${s}`;
+const itemDe=(k,id)=>k==="r"?items.find(i=>i.code===id):cons.find(c=>c.id===id);
+function fotoErro(img){if(img.dataset.alt){img.src=img.dataset.alt;img.dataset.alt=""}}
+const imgFoto=(id,s)=>`<img loading="lazy" alt="" src="${fUrl(id,s)}" data-alt="${fAlt(id,s)}" onerror="fotoErro(this)">`;
+function thumbHTML(k,id,photo){const l=fotos(photo);const ed=PAPEL==="editar";
+  if(!l.length)return `<button type="button" class="th${ed?"":" ro"}" data-ph="${k}|${esc(id)}" title="${ed?"Adicionar fotografia":"Sem fotografia"}" aria-label="${ed?"Adicionar fotografia":"Sem fotografia"}"></button>`;
+  return `<button type="button" class="th has" data-ph="${k}|${esc(id)}" title="Ver fotografia" aria-label="Ver fotografia">${imgFoto(l[0],160)}${l.length>1?`<em>${l.length}</em>`:""}</button>`}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-ph]");if(!b)return;e.preventDefault();e.stopPropagation();
+  const[k,id]=b.dataset.ph.split("|");const it=itemDe(k,id);if(!it)return;const l=fotos(it.photo);
+  if(l.length)verFotos(l,0,it.name||id);else if(PAPEL==="editar")menuFoto(k,id)},true);
+function galeriaHTML(k,id){const it=itemDe(k,id);const l=fotos(it&&it.photo);const ed=PAPEL==="editar";
+  return `<h3>Fotografias</h3><div class="gthumbs">${l.map((f,i)=>`<div class="gt"><button type="button" class="th has" data-gi="${i}" title="Ver fotografia" aria-label="Ver fotografia">${imgFoto(f,240)}</button>${ed?`<button type="button" class="gx" data-gx="${esc(f)}" title="Remover fotografia" aria-label="Remover fotografia">×</button>`:""}</div>`).join("")||`<span class="gnone">Ainda sem fotografias.</span>`}</div>
+  ${ed?`<div class="links"><button type="button" data-gadd="0">Escolher ficheiros</button><button type="button" data-gadd="1">Tirar fotografia</button></div>`:""}`}
+function ligarGaleria(){const g=$("#gal");if(!g)return;const k=g.dataset.k,id=g.dataset.id;g.innerHTML=galeriaHTML(k,id);
+  g.onclick=async e=>{const t=e.target.closest("button");if(!t)return;const it=itemDe(k,id);if(!it)return;const l=fotos(it.photo);
+    if(t.dataset.gi!==undefined)verFotos(l,+t.dataset.gi,it.name||id);
+    else if(t.dataset.gadd!==undefined)escolherFotos(k,id,t.dataset.gadd==="1");
+    else if(t.dataset.gx){if(!t.classList.contains("sure")){t.classList.add("sure");t.textContent="Remover?";setTimeout(()=>{if(t.isConnected&&!t.disabled){t.classList.remove("sure");t.textContent="×"}},3500);return}
+      t.disabled=true;try{const r=await call("removerFoto",PIN,k,id,t.dataset.gx,me);setFoto(k,r.id,r.photo);toast("Fotografia removida.")}catch(err){t.disabled=false;toast(errMsg(err))}}}}
+function setFoto(k,id,photo){const it=itemDe(k,id);if(it)it.photo=photo;const g=$("#gal");if(g&&g.dataset.k===k&&g.dataset.id===id)ligarGaleria();
+  if((k==="r"&&MODE==="reag")||(k==="c"&&MODE==="cons")){$("#view").dataset.v="";render()}}
+let LB={l:[],i:0,t:""};
+function verFotos(l,i,titulo){let lb=$("#lb");if(!lb){lb=document.createElement("div");lb.id="lb";lb.className="ovl";lb.setAttribute("role","dialog");document.body.appendChild(lb);
+    lb.onclick=e=>{const a=e.target.dataset&&e.target.dataset.lb;if(a==="x"||e.target===lb)fecharLb();else if(a==="p")lbPasso(-1);else if(a==="n")lbPasso(1)};
+    let x0=null;lb.addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});lb.addEventListener("touchend",e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50)lbPasso(dx<0?1:-1)})}
+  LB={l,i,t:titulo};pintarLb();lb.hidden=false}
+function pintarLb(){const lb=$("#lb");const{l,i,t}=LB;
+  lb.innerHTML=`<div class="lbtop"><span>${esc(t)}${l.length>1?` · ${i+1}/${l.length}`:""}</span><button type="button" data-lb="x">Fechar</button></div>
+  <img alt="" src="${fUrl(l[i],1600)}" data-alt="${fAlt(l[i],1600)}" onerror="fotoErro(this)">
+  ${l.length>1?`<button type="button" class="lbn p" data-lb="p" aria-label="Anterior">‹</button><button type="button" class="lbn n" data-lb="n" aria-label="Seguinte">›</button>`:""}
+  <a class="lbdrive" href="https:\/\/drive.google.com/file/d/${encodeURIComponent(l[i])}/view" target="_blank" rel="noopener">Abrir no Drive</a>`}
+function lbPasso(d){if(LB.l.length<2)return;LB.i=(LB.i+d+LB.l.length)%LB.l.length;pintarLb()}
+function fecharLb(){const lb=$("#lb");if(lb){lb.hidden=true;lb.innerHTML=""}}
+function menuFoto(k,id){const it=itemDe(k,id);let m=$("#phm");if(!m){m=document.createElement("div");m.id="phm";m.className="ovl";document.body.appendChild(m)}
+  m.innerHTML=`<div class="phbox"><b>Adicionar fotografia</b><span>${esc(it?it.name:id)}</span><button type="button" class="primary" data-mf="0">Escolher ficheiros</button><button type="button" data-mf="1">Tirar fotografia</button><button type="button" data-mf="x">Cancelar</button></div>`;
+  m.onclick=e=>{const a=e.target.dataset&&e.target.dataset.mf;if(e.target===m||a==="x"){m.hidden=true;return}if(a===undefined)return;m.hidden=true;escolherFotos(k,id,a==="1")};m.hidden=false}
+function escolherFotos(k,id,cam){const inp=document.createElement("input");inp.type="file";inp.accept="image/*";if(cam)inp.setAttribute("capture","environment");else inp.multiple=true;
+  inp.style.cssText="position:fixed;left:-999px;opacity:0";document.body.appendChild(inp);
+  inp.onchange=()=>{const fs=[...(inp.files||[])];inp.remove();if(fs.length)enviarFotos(k,id,fs)};inp.click()}
+function lerImagem(file,max){return new Promise((res,rej)=>{const u=URL.createObjectURL(file);const im=new Image();
+  im.onload=()=>{let w=im.naturalWidth,h=im.naturalHeight;const s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);
+    const cv=document.createElement("canvas");cv.width=w;cv.height=h;const cx=cv.getContext("2d");cx.fillStyle="#fff";cx.fillRect(0,0,w,h);cx.drawImage(im,0,0,w,h);URL.revokeObjectURL(u);res(cv.toDataURL("image/jpeg",.85))};
+  im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("Não consegui ler a imagem "+(file.name||"")))};im.src=u})}
+let PROG=null;function progresso(txt){if(!PROG){PROG=document.createElement("div");PROG.className="prog";document.body.appendChild(PROG)}PROG.hidden=!txt;if(txt)PROG.textContent=txt}
+async function enviarFotos(k,id,fs){let ok=0;
+  for(let i=0;i<fs.length;i++){progresso(fs.length>1?`A enviar fotografia ${i+1} de ${fs.length}…`:"A enviar a fotografia…");
+    try{const d=await lerImagem(fs[i],1600);const r=await call("adicionarFoto",PIN,k,id,d,me);setFoto(k,r.id,r.photo);ok++}catch(e){toast(errMsg(e))}}
+  progresso(null);if(ok)toast(ok===1?"Fotografia guardada.":`${ok} fotografias guardadas.`)}
+/* Importação automática das fotografias do inventário (só corre com o código de edição, retoma se for interrompida) */
+let IMPORT=false;
+const blobB64=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(b)});
+async function importarFotos(){if(IMPORT||PAPEL!=="editar"||!PIN)return;
+  const nomes=[...new Set(items.map(i=>String(i.photo||"").trim()).filter(v=>/^[\w.-]+\.jpe?g$/i.test(v)))];if(!nomes.length)return;
+  IMPORT=true;const BASE="https:\/\/rcruzdecarvalho.github.io/biotox-app/fotos-import/";const total=nomes.length;let feitos=0,falhas=0,parar=false;
+  const lotes=[];for(let i=0;i<nomes.length;i+=6)lotes.push(nomes.slice(i,i+6));
+  progresso(`A importar as fotografias dos reagentes… 0/${total}`);
+  const trabalhador=async()=>{while(lotes.length&&!parar){const g=lotes.shift();const lote=[];
+    for(const n of g){try{const r=await fetch(BASE+encodeURIComponent(n),{cache:"no-store"});if(!r.ok)throw new Error(r.status);lote.push({nome:n,base64:await blobB64(await r.blob())})}catch(e){falhas++}}
+    if(lote.length){try{const r=await call("importarFotosIniciais",PIN,lote);(r.feitos||[]).forEach(f=>{const it=items.find(x=>x.code===f.code);if(it)it.photo=f.photo})}
+      catch(e){falhas+=lote.length;const m=String(e&&e.message||e);if(m.includes("SO_CONSULTA")||m.includes("CODIGO_ERRADO"))parar=true}}
+    feitos+=g.length;progresso(`A importar as fotografias dos reagentes… ${Math.min(feitos,total)}/${total}`);
+    if(MODE==="reag"&&$("#sheet").hidden){$("#view").dataset.v="";render()}}};
+  try{await Promise.all([trabalhador(),trabalhador()])}finally{IMPORT=false;progresso(null)}
+  toast(falhas?`Fotografias importadas, ${falhas} não deu.`:"Fotografias dos reagentes importadas.");if(MODE==="reag"||MODE==="home")render()}
 const VERSAO="__VERSAO__";const AND=window.BiotoxAndroid||null;
 function verHTML(){const v=VERSAO.indexOf("__")<0?VERSAO:"";const apk=!AND&&/Android/i.test(navigator.userAgent);
   return `<p class="ver">Stocks BIOTOX${v?" · versão "+esc(v):""}${apk?` · <a class="lnk" href="https:\/\/github.com/RCruzDeCarvalho/biotox-app/releases/latest/download/StocksBIOTOX.apk" target="_blank" rel="noopener">Instalar a app Android</a>`:""}</p>`}

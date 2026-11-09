@@ -203,7 +203,7 @@ function importarArmarioLiquidos() {
 
 /* ================= CONSUMÍVEIS ================= */
 const CONS_COLS = [['id', 'ID'], ['name', 'Artigo'], ['cab', 'Armário'], ['shelf', 'Prateleira'], ['size', 'Tamanho'],
-  ['qty', 'Quantidade'], ['min', 'Mínimo'], ['obs', 'Notas'], ['updatedAt', 'Actualizado em'], ['updatedBy', 'Actualizado por'], ['type', 'Tipo']];
+  ['qty', 'Quantidade'], ['min', 'Mínimo'], ['obs', 'Notas'], ['updatedAt', 'Actualizado em'], ['updatedBy', 'Actualizado por'], ['type', 'Tipo'], ['photo', 'Foto']];
 const CONS_KEYS = CONS_COLS.map(c => c[0]);
 // Stock do armário do corredor, da folha "Biotox - Armário Stock" (actualizada a 21/05/2026). O mínimo começa em 1 para todos.
 const CONS_INICIAL = [["CON-001", "Caixas de petri 60 mm", "Armário Stock Corredor", "5ª prateleira", "10 uni.", "25", "1", "", "21/05/2026", "", "Placas de Petri"], ["CON-002", "Cuvettes", "Armário Stock Corredor", "3ª prateleira", "100 uni.", "6", "1", "", "21/05/2026", "", "Cuvettes"], ["CON-003", "Luvas latex (Eurotex)", "Armário Stock Corredor", "1ª prateleira", "S", "7", "1", "", "21/05/2026", "", "Luvas"], ["CON-004", "Luvas latex (LLG)", "Armário Stock Corredor", "1ª prateleira", "L", "10", "1", "", "21/05/2026", "", "Luvas"], ["CON-005", "Luvas latex (LLG)", "Armário Stock Corredor", "1ª prateleira", "M", "10", "1", "", "21/05/2026", "", "Luvas"], ["CON-006", "Luvas nitrilo azul (Euromedis)", "Armário Stock Corredor", "1ª prateleira", "L", "6", "1", "", "21/05/2026", "", "Luvas"], ["CON-007", "Luvas nitrilo azul (LLG)", "Armário Stock Corredor", "1ª prateleira", "M", "7", "1", "", "21/05/2026", "", "Luvas"], ["CON-008", "Luvas nitrilo azul (Unigloves)", "Armário Stock Corredor", "1ª prateleira", "S", "2", "1", "", "21/05/2026", "", "Luvas"], ["CON-009", "Luvas nitrilo roxas (Vasco)", "Armário Stock Corredor", "1ª prateleira", "L", "2", "1", "", "21/05/2026", "", "Luvas"], ["CON-010", "Microplacas brancas", "Armário Stock Corredor", "4ª prateleira", "", "50", "1", "", "21/05/2026", "", "Microplacas"], ["CON-011", "Microplacas UV", "Armário Stock Corredor", "2ª prateleira", "", "5", "1", "", "21/05/2026", "", "Microplacas"], ["CON-012", "Microplas non-binding (EROD)", "Armário Stock Corredor", "2ª prateleira", "10 uni.", "2", "1", "", "21/05/2026", "", "Microplacas"], ["CON-013", "Pontas 1 mL azuis (automáticas)", "Armário Stock Corredor", "4ª prateleira", "1000 uni.", "3", "1", "", "21/05/2026", "", "Pontas de pipeta"], ["CON-014", "Pontas 1 mL azuis (não-automáticas)", "Armário Stock Corredor", "4ª prateleira", "1000 uni.", "8", "1", "", "21/05/2026", "", "Pontas de pipeta"], ["CON-015", "Pontas 1-5 mL (automáticas) (Brand)", "Armário Stock Corredor", "2ª prateleira", "200 uni.", "0", "1", "saco aberto com menos de 100 pontas no laboratório", "21/05/2026", "", "Pontas de pipeta"], ["CON-016", "Pontas 1-5 mL (não-automáticas)", "Armário Stock Corredor", "2ª prateleira", "250 uni.", "3", "1", "", "21/05/2026", "", "Pontas de pipeta"], ["CON-017", "Pontas 1-5 mL (não-automáticas) (Eppendorf)", "Armário Stock Corredor", "1ª prateleira", "100 uni.", "7", "1", "", "21/05/2026", "", "Pontas de pipeta"], ["CON-018", "Pontas 20 µL brancas (automáticas)", "Armário Stock Corredor", "4ª prateleira", "1000 uni.", "4", "1", "", "21/05/2026", "", "Pontas de pipeta"], ["CON-019", "Pontas 200 µL amarelas (automáticas)", "Armário Stock Corredor", "2ª prateleira", "1000 uni.", "11", "1", "", "21/05/2026", "", "Pontas de pipeta"], ["CON-020", "Pontas 200 µL amarelas (não-automáticas)", "Armário Stock Corredor", "4ª prateleira", "1000 uni.", "1", "1", "", "21/05/2026", "", "Pontas de pipeta"], ["CON-021", "Pontas 200 µL brancas (automáticas)", "Armário Stock Corredor", "2ª prateleira", "1000 uni.", "4", "1", "", "21/05/2026", "", "Pontas de pipeta"], ["CON-022", "Pontas brancas multicanal (250 µL)", "Armário Stock Corredor", "2ª prateleira", "", "500", "1", "aproximadamente", "21/05/2026", "", "Pontas de pipeta"], ["CON-023", "Pontas brancas multicanal (300 µL)", "Armário Stock Corredor", "2ª prateleira", "1000 uni.", "2", "1", "", "21/05/2026", "", "Pontas de pipeta"], ["CON-024", "Tubos 0,2 mL", "Armário Stock Corredor", "5ª prateleira", "1000 uni.", "5", "1", "", "21/05/2026", "", "Tubos"], ["CON-025", "Tubos 0,2 mL", "Armário Stock Corredor", "5ª prateleira", "500 uni.", "1", "1", "", "21/05/2026", "", "Tubos"], ["CON-026", "Tubos 0,5 mL", "Armário Stock Corredor", "5ª prateleira", "1000 uni.", "9", "1", "", "21/05/2026", "", "Tubos"], ["CON-027", "Tubos 1,5 mL", "Armário Stock Corredor", "3ª prateleira", "500 uni.", "11", "1", "", "21/05/2026", "", "Tubos"], ["CON-028", "Tubos 1,5 mL", "Armário Stock Corredor", "3ª prateleira", "1000 uni.", "1", "1", "", "21/05/2026", "", "Tubos"], ["CON-029", "Tubos 2 mL", "Armário Stock Corredor", "4ª prateleira", "1000 uni.", "3", "1", "", "21/05/2026", "", "Tubos"], ["CON-030", "Tubos com rosca 2 mL", "Armário Stock Corredor", "5ª prateleira", "500 uni.", "1", "1", "", "21/05/2026", "", "Tubos"], ["CON-031", "Tubos criogénicos fundo redondo 2 mL", "Armário Stock Corredor", "5ª prateleira", "50 uni.", "14", "1", "", "21/05/2026", "", "Tubos"]];
@@ -448,4 +448,133 @@ function apagarArquivo(pin, id, quem) {
   f.setTrashed(true);
   registar_(folhas_().h, 'ENC', 'Exportação apagada: ' + nome, quem);
   return listarArquivo(pin);
+}
+
+
+/* ================= FOTOGRAFIAS ================= */
+// Ficam em Lab Stock › Fotografias › Reagentes / Consumíveis. Na folha, a coluna Foto guarda os IDs do Drive separados por vírgulas.
+const PASTA_FOTOS = 'Fotografias';
+const LINK_PUBLICO_ = f => { try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) { } };
+
+function subpasta_(pai, nome) {
+  const it = pai.getFoldersByName(nome);
+  return it.hasNext() ? it.next() : pai.createFolder(nome);
+}
+function pastaFotos_(nome) {
+  const raiz = subpasta_(DriveApp.getFolderById(PASTA_BASE_ID), PASTA_FOTOS);
+  const p = subpasta_(raiz, nome);
+  return p;
+}
+function idsFoto_(v) {
+  return String(v || '').split(/[,\s]+/).filter(x => /^[\w-]{20,}$/.test(x));
+}
+function folhaFoto_(kind) {
+  if (kind === 'r') return { sh: folhas_().r, pasta: 'Reagentes' };
+  if (kind === 'c') { const sh = consFolha_(); if (!sh) throw new Error('Falta o separador Consumiveis.'); return { sh, pasta: 'Consumíveis' }; }
+  throw new Error('Tipo de artigo desconhecido.');
+}
+function colFoto_(sh) {
+  const head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(String);
+  let c = head.indexOf('Foto') + 1;
+  if (!c) {
+    c = sh.getLastColumn() + 1;
+    sh.getRange(1, c).setValue('Foto').setFontWeight('bold').setBackground('#0d5c6e').setFontColor('#ffffff');
+    sh.getRange(2, c, Math.max(sh.getMaxRows() - 1, 1), 1).setNumberFormat('@');
+  }
+  return c;
+}
+function blobFoto_(base64, nome) {
+  const m = String(base64 || '').match(/^data:(image\/[\w.+-]+);base64,(.*)$/);
+  const b64 = m ? m[2] : String(base64 || '');
+  if (!b64 || b64.length > 20000000) throw new Error('Imagem inválida ou demasiado grande.');
+  const tipo = m ? m[1] : 'image/jpeg';
+  return Utilities.newBlob(Utilities.base64Decode(b64), tipo, nome);
+}
+function nomeFicheiro_(id, nome) {
+  const limpo = String(nome || '').replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
+  return id + (limpo ? ' - ' + limpo : '') + ' ' + Utilities.formatDate(new Date(), 'Europe/Lisbon', 'yyyy-MM-dd HH.mm.ss') + '.jpg';
+}
+
+/* Junta uma fotografia (ficheiro ou câmara) a um reagente ('r') ou consumível ('c'). Só editores. */
+function adicionarFoto(pin, kind, id, base64, quem) {
+  verificar_(pin);
+  const { sh, pasta } = folhaFoto_(kind);
+  let row = linhaDe_(sh, id);
+  if (row < 0) throw new Error('Não encontrei ' + id);
+  const nomeItem = String(sh.getRange(row, 2).getValue());
+  const f = pastaFotos_(pasta).createFile(blobFoto_(base64, nomeFicheiro_(id, nomeItem)));
+  LINK_PUBLICO_(f);
+  const lock = LockService.getScriptLock(); lock.waitLock(20000);
+  let ids;
+  try {
+    row = linhaDe_(sh, id);
+    if (row < 0) { f.setTrashed(true); throw new Error('Não encontrei ' + id); }
+    const c = colFoto_(sh);
+    ids = idsFoto_(sh.getRange(row, c).getValue()).concat(f.getId());
+    sh.getRange(row, c).setNumberFormat('@').setValue(ids.join(','));
+    registar_(folhas_().h, id, 'Fotografia adicionada', quem);
+  } finally { lock.releaseLock(); }
+  return { id, photo: ids.join(',') };
+}
+
+/* Tira uma fotografia do artigo e manda o ficheiro para o lixo do Drive (recuperável 30 dias). Só editores. */
+function removerFoto(pin, kind, id, fileId, quem) {
+  verificar_(pin);
+  const { sh, pasta } = folhaFoto_(kind);
+  const lock = LockService.getScriptLock(); lock.waitLock(20000);
+  let ids;
+  try {
+    const row = linhaDe_(sh, id);
+    if (row < 0) throw new Error('Não encontrei ' + id);
+    const c = colFoto_(sh);
+    ids = idsFoto_(sh.getRange(row, c).getValue()).filter(x => x !== fileId);
+    sh.getRange(row, c).setNumberFormat('@').setValue(ids.join(','));
+    registar_(folhas_().h, id, 'Fotografia removida', quem);
+  } finally { lock.releaseLock(); }
+  try {
+    const f = DriveApp.getFileById(fileId), alvo = pastaFotos_(pasta).getId(), pais = f.getParents();
+    while (pais.hasNext()) if (pais.next().getId() === alvo) { f.setTrashed(true); break; }
+  } catch (e) { }
+  return { id, photo: ids.join(',') };
+}
+
+/* Importação inicial: as fotografias dos frascos tiradas no inventário (a coluna Foto ainda tem o nome do ficheiro).
+   Recebe um lote [{nome, base64}] e troca, em todos os frascos com esse nome, o nome pelo ID da fotografia no Drive. */
+function importarFotosIniciais(pin, lote) {
+  verificar_(pin);
+  const { sh } = folhaFoto_('r');
+  const pasta = pastaFotos_('Reagentes');
+  const c = colFoto_(sh);
+  const n = sh.getLastRow() - 1;
+  if (n < 1) return { feitos: [] };
+  const codes = sh.getRange(2, 1, n, 1).getValues().map(x => String(x[0]));
+  const nomes = sh.getRange(2, 2, n, 1).getValues().map(x => String(x[0]));
+  const criados = [];
+  const atuais = sh.getRange(2, c, n, 1).getValues().map(x => String(x[0]).trim());
+  (lote || []).slice(0, 12).forEach(o => {
+    const linhas = atuais.map((v, i) => v === o.nome ? i : -1).filter(i => i >= 0);
+    if (!linhas.length) return;
+    const lista = linhas.map(i => codes[i]).join(' ');
+    const f = pasta.createFile(blobFoto_(o.base64, lista + ' - ' + nomes[linhas[0]].replace(/[\\/:*?"<>|]+/g, ' ').slice(0, 50) + '.jpg'));
+    f.setDescription('Fotografia do inventário: ' + o.nome);
+    LINK_PUBLICO_(f);
+    criados.push({ nome: o.nome, id: f.getId() });
+  });
+  const feitos = [];
+  if (criados.length) {
+    const lock = LockService.getScriptLock(); lock.waitLock(20000);
+    try {
+      const rg = sh.getRange(2, c, n, 1);
+      const vals = rg.getValues();
+      criados.forEach(cr => {
+        let usado = false;
+        vals.forEach((v, i) => {
+          if (String(v[0]).trim() === cr.nome) { v[0] = cr.id; usado = true; feitos.push({ code: codes[i], photo: cr.id }); }
+        });
+        if (!usado) DriveApp.getFileById(cr.id).setTrashed(true);
+      });
+      rg.setNumberFormat('@').setValues(vals);
+    } finally { lock.releaseLock(); }
+  }
+  return { feitos };
 }
