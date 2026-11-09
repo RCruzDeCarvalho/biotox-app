@@ -405,11 +405,12 @@ function pastaEncomendas_() {
 /* Qualquer código válido (edição ou consulta) pode exportar uma encomenda */
 function exportarEncomenda(pin, base64, meta, quem) {
   papel_(pin);
-  const b64 = String(base64 || '').replace(/^data:image\/png;base64,/, '');
-  if (!b64 || b64.length > 15000000) throw new Error('Imagem inválida.');
+  const m = String(base64 || '').match(/^data:(image\/(?:png|jpeg));base64,(.*)$/);
+  const tipo = m ? m[1] : 'image/png', b64 = m ? m[2] : String(base64 || '');
+  if (!b64 || b64.length > 45000000) throw new Error('Imagem inválida ou demasiado grande.');
   const agora = new Date();
-  const nome = 'Encomenda BIOTOX ' + Utilities.formatDate(agora, 'Europe/Lisbon', 'yyyy-MM-dd HH.mm') + (quem ? ' - ' + String(quem).slice(0, 40) : '') + '.png';
-  const blob = Utilities.newBlob(Utilities.base64Decode(b64), 'image/png', nome);
+  const nome = 'Encomenda BIOTOX ' + Utilities.formatDate(agora, 'Europe/Lisbon', 'yyyy-MM-dd HH.mm') + (quem ? ' - ' + String(quem).slice(0, 40) : '') + (tipo === 'image/jpeg' ? '.jpg' : '.png');
+  const blob = Utilities.newBlob(Utilities.base64Decode(b64), tipo, nome);
   const f = pastaEncomendas_().createFile(blob);
   f.setDescription(JSON.stringify({ by: String(quem || '').slice(0, 60), n: Number(meta && meta.n) || 0 }));
   registar_(folhas_().h, 'ENC', 'Encomenda exportada (' + ((meta && meta.n) || 0) + ' artigos)', quem);
@@ -421,7 +422,7 @@ function listarArquivo(pin) {
   const out = [];
   while (files.hasNext()) {
     const f = files.next();
-    if (f.getMimeType() !== 'image/png') continue;
+    if (f.getMimeType() !== 'image/png' && f.getMimeType() !== 'image/jpeg') continue;
     let meta = {}; try { meta = JSON.parse(f.getDescription() || '{}'); } catch (e) { }
     out.push({ id: f.getId(), name: f.getName(), at: f.getDateCreated().getTime(), by: meta.by || '', n: meta.n || 0, url: f.getUrl(), size: f.getSize() });
   }
@@ -438,7 +439,7 @@ function ficheiroArquivo_(id) {
 function verArquivo(pin, id) {
   papel_(pin);
   const f = ficheiroArquivo_(id);
-  return 'data:image/png;base64,' + Utilities.base64Encode(f.getBlob().getBytes());
+  return 'data:' + f.getMimeType() + ';base64,' + Utilities.base64Encode(f.getBlob().getBytes());
 }
 /* Só quem tem o código de edição pode apagar (vai para o lixo do Drive, recuperável durante 30 dias) */
 function apagarArquivo(pin, id, quem) {

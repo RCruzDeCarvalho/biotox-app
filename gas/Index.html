@@ -149,8 +149,16 @@ a.ext:hover{background:var(--accent-soft)}
 .crow{grid-template-columns:auto minmax(0,1fr) auto!important}.crow .sub{grid-column:2/3!important}.crow .pick{grid-row:1/3;padding:0 2px 0 0}
 .th{flex:none;position:relative;width:46px;height:46px;margin:8px 2px 8px 6px;border-radius:8px;border:1.5px dashed var(--line);background:transparent;padding:0;overflow:hidden;display:block;cursor:pointer;align-self:center;min-height:0}
 .th.has{border:1px solid var(--line);background:#fff}
-.ofotos{grid-column:1/-1;flex-basis:100%;display:flex;flex-direction:column;gap:6px;margin-top:4px}.ofotos>span{font-size:12px;color:var(--muted)}.ofotos>div{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.ofotos .th{margin:0;width:54px;height:54px}.ofotos [aria-pressed=true]{outline:3px solid var(--accent);outline-offset:1px}.ofnone{font-size:13px;padding:6px 10px}.th.ro:not(.has){cursor:default}.th img{width:100%;height:100%;object-fit:cover;display:block}
+.ofotos{flex-basis:100%;display:flex;flex-direction:column;gap:6px;margin-top:4px}.ofotos>span{font-size:12px;color:var(--muted)}.ofotos>div{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ocv{width:80px;height:80px;border:1px solid var(--line);border-radius:8px;background:#fff}.ofsem{font-size:13px;color:var(--muted)}
+#crop{z-index:26;align-items:stretch}.cbox{background:var(--surface);color:var(--ink);width:min(720px,100%);margin:auto;max-height:100%;overflow:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 14px calc(14px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px}
+.ctop{display:flex;justify-content:space-between;align-items:center;gap:10px}.cthumbs{display:flex;gap:8px;flex-wrap:wrap}.cthumbs .th{margin:0;width:56px;height:56px}.cthumbs [aria-pressed=true]{outline:3px solid var(--accent);outline-offset:1px}
+.cstage{display:flex;justify-content:center;background:#0b1014;border-radius:8px;padding:8px}.cwrap{position:relative;display:inline-block;line-height:0;touch-action:none}
+.cwrap img{max-width:100%;max-height:calc(100vh - 290px);display:block;user-select:none;-webkit-user-drag:none}
+.cr{position:absolute;border:2px solid #fff;box-shadow:0 0 0 9999px rgba(0,0,0,.55);cursor:move;touch-action:none}.cr[hidden]{display:none}
+.cr i{position:absolute;width:26px;height:26px;background:var(--accent);border:2px solid #fff;border-radius:50%}
+.cr i[data-h=nw]{left:-4px;top:-4px;cursor:nwse-resize}.cr i[data-h=ne]{right:-4px;top:-4px;cursor:nesw-resize}.cr i[data-h=sw]{left:-4px;bottom:-4px;cursor:nesw-resize}.cr i[data-h=se]{right:-4px;bottom:-4px;cursor:nwse-resize}
+.cwrap{overflow:hidden}
 .th em{position:absolute;right:2px;bottom:2px;background:rgba(0,0,0,.7);color:#fff;font:600 10px/1 system-ui,sans-serif;padding:2px 4px;border-radius:6px;font-style:normal}
 .crow{grid-template-columns:auto auto minmax(0,1fr) auto!important}.crow .sub{grid-column:3/4!important}.crow .th{grid-row:1/3;margin:0 4px 0 0}
 .gal h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px}.gthumbs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
@@ -445,7 +453,7 @@ function fdsLinks(it){
 }
 function shelfOptions(cab,cur){const l=[...(SHELVES[cab]||[])];if(cur&&!l.includes(cur))l.push(cur);return l.map(s=>`<option ${s===cur?"selected":""}>${esc(s)}</option>`).join("")}
 function closeSheet(){$("#sheet").hidden=true;$("#scrim").hidden=true;openCode=null}
-$("#scrim").onclick=closeSheet;document.addEventListener("keydown",e=>{const lb=$("#lb");if(lb&&!lb.hidden){if(e.key==="Escape")fecharLb();else if(e.key==="ArrowLeft")lbPasso(-1);else if(e.key==="ArrowRight")lbPasso(1);return}const m=$("#phm");if(m&&!m.hidden&&e.key==="Escape"){m.hidden=true;return}if(e.key==="Escape")closeSheet()});
+$("#scrim").onclick=closeSheet;document.addEventListener("keydown",e=>{const lb=$("#lb");if(lb&&!lb.hidden){if(e.key==="Escape")fecharLb();else if(e.key==="ArrowLeft")lbPasso(-1);else if(e.key==="ArrowRight")lbPasso(1);return}const m=$("#phm");if(m&&!m.hidden&&e.key==="Escape"){m.hidden=true;return}const cp=$("#crop");if(cp&&!cp.hidden&&e.key==="Escape"){cp.hidden=true;cp.innerHTML="";return}if(e.key==="Escape")closeSheet()});
 
 function openSheet(code){if(String(code).startsWith("CON-")){openCons(code);return}if(!String(code).startsWith("BTX-"))return;
   const it=items.find(i=>i.code===code);if(!it){toast("Este código já não existe no catálogo.");return}
@@ -724,7 +732,7 @@ function lerImagem(file,max){return new Promise((res,rej)=>{const u=URL.createOb
 let PROG=null;function progresso(txt){if(!PROG){PROG=document.createElement("div");PROG.className="prog";document.body.appendChild(PROG)}PROG.hidden=!txt;if(txt)PROG.textContent=txt}
 async function enviarFotos(k,id,fs){let ok=0;
   for(let i=0;i<fs.length;i++){progresso(fs.length>1?`A enviar fotografia ${i+1} de ${fs.length}…`:"A enviar a fotografia…");
-    try{const d=await lerImagem(fs[i],1600);const r=await call("adicionarFoto",PIN,k,id,d,me);setFoto(k,r.id,r.photo);ok++}catch(e){toast(errMsg(e))}}
+    try{const d=await lerImagem(fs[i],2400);const r=await call("adicionarFoto",PIN,k,id,d,me);setFoto(k,r.id,r.photo);ok++}catch(e){toast(errMsg(e))}}
   progresso(null);if(ok)toast(ok===1?"Fotografia guardada.":`${ok} fotografias guardadas.`)}
 /* Importação automática das fotografias do inventário (só corre com o código de edição, retoma se for interrompida) */
 let IMPORT=false;
@@ -769,29 +777,64 @@ function renderOrder(){const v=$("#view");
   v.querySelectorAll(".orow").forEach(r=>{const key=r.dataset.key;
     r.querySelector("[data-q]").oninput=e=>{const x=CART.find(c=>cartKey(c.k,c.id)===key);if(x){x.qty=e.target.value;saveCart()}};
     r.querySelector("[data-del]").onclick=()=>{CART=CART.filter(c=>cartKey(c.k,c.id)!==key);saveCart();v.dataset.v="";renderOrder()};
-    r.querySelectorAll("[data-of]").forEach(b=>b.onclick=()=>{const x=CART.find(c=>cartKey(c.k,c.id)===key);if(!x)return;x.foto=b.dataset.of;saveCart();
-      r.querySelectorAll("[data-of]").forEach(o=>o.setAttribute("aria-pressed",String(o.dataset.of===x.foto)))})});
+    const ed=r.querySelector("[data-ofed]");if(ed)ed.onclick=()=>editarFotoEnc(key);
+    const cv=r.querySelector("canvas.ocv");if(cv){const x=CART.find(c=>cartKey(c.k,c.id)===key);if(x&&x.foto)desenharRecorte(cv,x.foto,x.crop)}});
   $("#oTo").oninput=e=>{try{localStorage.setItem("btx-req",e.target.value)}catch(err){}};
   const clr=$("#oClear");clr.onclick=()=>{if(clr.dataset.ok){CART=[];saveCart();v.dataset.v="";renderOrder();return}clr.dataset.ok="1";clr.textContent="Confirmar limpar";setTimeout(()=>{if(clr.isConnected){delete clr.dataset.ok;clr.textContent=tr("Limpar lista")}},4000)};
   $("#oExp").onclick=exportOrder}
-function ofotoHTML(x){const it=itemDe(x.k,x.id);const l=fotos(it&&it.photo);if(!l.length)return"";if(x.foto&&!l.includes(x.foto))x.foto=l[0];if(x.foto===undefined)x.foto=l[0];
-  return `<div class="ofotos"><span>Fotografia na encomenda</span><div>${l.map(f=>`<button type="button" class="th has" data-of="${esc(f)}" aria-pressed="${f===x.foto}" title="Usar esta fotografia" aria-label="Usar esta fotografia">${imgFoto(f,160)}</button>`).join("")}<button type="button" class="ofnone" data-of="" aria-pressed="${!x.foto}">Sem fotografia</button></div></div>`}
-function imgParaCanvas(id){return fotoBlobUrl(id,800).then(u=>new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=u})).catch(()=>null)}
+function ofotoHTML(x){const it=itemDe(x.k,x.id);const l=fotos(it&&it.photo);
+  if(!l.length)return `<div class="ofotos"><span>Sem fotografias deste artigo. Podes juntar uma na ficha dele.</span></div>`;
+  if(x.foto===undefined){x.foto=l[0];saveCart()}if(x.foto&&!l.includes(x.foto)){x.foto=l[0];x.crop=null;saveCart()}
+  return `<div class="ofotos"><span>Fotografia na encomenda</span><div>${x.foto?`<canvas class="ocv" width="160" height="160"></canvas>`:`<span class="ofsem">Sem fotografia</span>`}<button type="button" data-ofed>${x.foto?"Mudar ou recortar":"Escolher fotografia"}</button></div></div>`}
+/* Desenha a parte recortada da fotografia num canvas pequeno (pré-visualização na lista) */
+async function desenharRecorte(cv,id,cr){const im=await imgParaCanvas(id);if(!im||!cv.isConnected)return;const c=cr||{x:0,y:0,w:1,h:1};
+  const sw=c.w*im.naturalWidth,sh=c.h*im.naturalHeight;const s=Math.min(cv.width/sw,cv.height/sh);const dw=sw*s,dh=sh*s;const ctx=cv.getContext("2d");
+  ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(im,c.x*im.naturalWidth,c.y*im.naturalHeight,sw,sh,(cv.width-dw)/2,(cv.height-dh)/2,dw,dh)}
+/* Editor: escolher uma das fotografias do artigo e recortar a parte que interessa (ex. o rótulo com a referência) */
+function editarFotoEnc(key){const x=CART.find(c=>cartKey(c.k,c.id)===key);if(!x)return;const it=itemDe(x.k,x.id);const l=fotos(it&&it.photo);if(!l.length)return;
+  let sel=x.foto||l[0],cr=x.foto&&x.crop?Object.assign({},x.crop):{x:0,y:0,w:1,h:1};
+  let ov=$("#crop");if(!ov){ov=document.createElement("div");ov.id="crop";ov.className="ovl";document.body.appendChild(ov)}
+  const pintar=()=>{ov.innerHTML=`<div class="cbox"><div class="ctop"><b>${esc(it.name||x.id)}</b><button type="button" data-c="x">Cancelar</button></div>
+    ${l.length>1?`<div class="cthumbs">${l.map(f=>`<button type="button" class="th has" data-c="f" data-f="${esc(f)}" aria-pressed="${f===sel}">${imgFoto(f,160)}</button>`).join("")}</div>`:""}
+    <p class="hint">Arrasta o rectângulo e os cantos para escolher a parte da fotografia que vai na encomenda.</p>
+    <div class="cstage"><div class="cwrap"><img alt="" id="cImg"><div class="cr" id="cR"><i data-h="nw"></i><i data-h="ne"></i><i data-h="sw"></i><i data-h="se"></i></div></div></div>
+    <div class="actions"><button type="button" data-c="none">Sem fotografia</button><button type="button" data-c="all">Fotografia inteira</button><button type="button" class="primary" data-c="ok">Usar</button></div></div>`;
+    const img=$("#cImg"),box=$("#cR");box.hidden=true;
+    fotoBlobUrl(sel,2400).then(u=>{img.src=u}).catch(()=>{img.src=fAlt(sel,2400)});
+    img.onload=()=>{box.hidden=false;pos()};
+    const pos=()=>{box.style.left=cr.x*100+"%";box.style.top=cr.y*100+"%";box.style.width=cr.w*100+"%";box.style.height=cr.h*100+"%"};
+    let drag=null;
+    box.onpointerdown=e=>{e.preventDefault();const r=img.getBoundingClientRect();drag={h:e.target.dataset.h||"m",x0:e.clientX,y0:e.clientY,c0:Object.assign({},cr),W:r.width,H:r.height};box.setPointerCapture(e.pointerId)};
+    box.onpointermove=e=>{if(!drag)return;const dx=(e.clientX-drag.x0)/drag.W,dy=(e.clientY-drag.y0)/drag.H,c0=drag.c0,M=.05;let{x,y,w,h}=c0;
+      if(drag.h==="m"){x=Math.min(Math.max(0,c0.x+dx),1-w);y=Math.min(Math.max(0,c0.y+dy),1-h)}
+      else{if(drag.h.includes("w")){x=Math.min(Math.max(0,c0.x+dx),c0.x+c0.w-M);w=c0.x+c0.w-x}else w=Math.min(Math.max(M,c0.w+dx),1-c0.x);
+        if(drag.h.includes("n")){y=Math.min(Math.max(0,c0.y+dy),c0.y+c0.h-M);h=c0.y+c0.h-y}else h=Math.min(Math.max(M,c0.h+dy),1-c0.y)}
+      cr={x,y,w,h};pos()};
+    box.onpointerup=box.onpointercancel=()=>{drag=null}};
+  ov.onclick=e=>{const b=e.target.closest("[data-c]");if(!b)return;const a=b.dataset.c;
+    if(a==="x"){ov.hidden=true;ov.innerHTML="";return}
+    if(a==="f"){sel=b.dataset.f;cr={x:0,y:0,w:1,h:1};pintar();return}
+    if(a==="all"){cr={x:0,y:0,w:1,h:1};const bx=$("#cR");if(bx){bx.style.left="0";bx.style.top="0";bx.style.width="100%";bx.style.height="100%"}return}
+    if(a==="none"){x.foto="";x.crop=null}else if(a==="ok"){x.foto=sel;x.crop=(cr.w>.995&&cr.h>.995)?null:cr}
+    saveCart();ov.hidden=true;ov.innerHTML="";$("#view").dataset.v="";renderOrder()};
+  pintar();ov.hidden=false}
+function imgParaCanvas(id){return fotoBlobUrl(id,2400).then(u=>new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=u})).catch(()=>null)}
 function wrapText(ctx,t,w){const words=String(t).split(/\s+/);const lines=[];let cur="";words.forEach(wd=>{const test=cur?cur+" "+wd:wd;if(ctx.measureText(test).width>w&&cur){lines.push(cur);cur=wd}else cur=test});if(cur)lines.push(cur);return lines.length?lines:[""]}
 function rrect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
 async function orderImage(by,to,notes){const EN=LANG==="en";const L=EN?{t:"Order request",items:"items",item:"item",by:"Requested by",to:"For",r:"Reagents",c:"Consumables",qty:"Quantity",it:"Item",notes:"Notes",foot:"Generated with the Stocks BIOTOX app"}:{t:"Pedido de encomenda",items:"artigos",item:"artigo",by:"Pedido por",to:"Para",r:"Reagentes",c:"Consumíveis",qty:"Quantidade",it:"Artigo",notes:"Notas",foot:"Gerado na app Stocks BIOTOX"};
-  const F='"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif';const W=1080,P=56,QW=230;
+  const F='"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif';const W=1080,P=56,QW=230,S=2;
   const logo=await new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);const s=document.querySelector(".logo img");im.src=s?s.src:""});
   const cv=document.createElement("canvas");const ctx=cv.getContext("2d");
   const rows=[];["r","c"].forEach(k=>{const G=CART.filter(x=>x.k===k);if(G.length){rows.push({sec:k==="r"?L.r:L.c});G.forEach(x=>rows.push(x))}});
-  ctx.font=`600 26px ${F}`;const PW=240;
+  ctx.font=`600 26px ${F}`;const PW=380,PH=420;
   const imgs=await Promise.all(rows.map(r=>!r.sec&&r.foto?imgParaCanvas(r.foto):null));
-  const lay=rows.map((r,i)=>{if(r.sec)return{h:64,r};const im=imgs[i];let ph=0,pw=0;if(im){const s=Math.min(PW/im.width,300/im.height);pw=Math.round(im.width*s);ph=Math.round(im.height*s)}
+  const lay=rows.map((r,i)=>{if(r.sec)return{h:64,r};const im=imgs[i];let ph=0,pw=0,src=null;
+    if(im){const c=r.crop||{x:0,y:0,w:1,h:1};src={x:c.x*im.naturalWidth,y:c.y*im.naturalHeight,w:c.w*im.naturalWidth,h:c.h*im.naturalHeight};const s=Math.min(PW/src.w,PH/src.h);pw=Math.round(src.w*s);ph=Math.round(src.h*s)}
     const nameW=W-2*P-QW-70-(im?pw+24:0);ctx.font=`600 26px ${F}`;const nl=wrapText(ctx,r.name,nameW);ctx.font=`400 20px ${F}`;const dl=r.det?wrapText(ctx,r.det,nameW):[];
-    return{h:Math.max(28+nl.length*34+dl.length*28+18,im?ph+32:0),r,nl,dl,im,ph,pw}});
+    return{h:Math.max(28+nl.length*34+dl.length*28+18,im?ph+32:0),r,nl,dl,im,ph,pw,src}});
   ctx.font=`400 22px ${F}`;const notesL=notes?wrapText(ctx,notes,W-2*P-40):[];
   const H=230+80+lay.reduce((a,b)=>a+b.h,0)+(notesL.length?notesL.length*32+90:0)+110;
-  cv.width=W;cv.height=H;
+  cv.width=W*S;cv.height=H*S;ctx.scale(S,S);ctx.imageSmoothingQuality="high";
   ctx.fillStyle="#ffffff";ctx.fillRect(0,0,W,H);
   ctx.fillStyle="#0d5c6e";ctx.fillRect(0,0,W,200);
   ctx.fillStyle="#ffffff";rrect(ctx,P,46,250,108,16);ctx.fill();
@@ -806,7 +849,7 @@ async function orderImage(by,to,notes){const EN=LANG==="en";const L=EN?{t:"Order
   y+=36;ctx.strokeStyle="#0d5c6e";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(P,y);ctx.lineTo(W-P,y);ctx.stroke();y+=4;
   let n=0;lay.forEach(o=>{if(o.r.sec){ctx.fillStyle="#0d5c6e";ctx.font=`700 22px ${F}`;ctx.fillText(o.r.sec.toUpperCase(),P+20,y+44);y+=o.h;n=0;return}
     if(n++%2===0){ctx.fillStyle="#eef5f7";ctx.fillRect(P,y,W-2*P,o.h)}
-    let tx=P+20;if(o.im){const pw=o.pw;ctx.save();rrect(ctx,P+20,y+16,pw,o.ph,10);ctx.clip();ctx.drawImage(o.im,P+20,y+16,pw,o.ph);ctx.restore();
+    let tx=P+20;if(o.im){const pw=o.pw;ctx.save();rrect(ctx,P+20,y+16,pw,o.ph,10);ctx.clip();ctx.drawImage(o.im,o.src.x,o.src.y,o.src.w,o.src.h,P+20,y+16,pw,o.ph);ctx.restore();
       ctx.strokeStyle="#d9e0e5";ctx.lineWidth=1;rrect(ctx,P+20,y+16,pw,o.ph,10);ctx.stroke();tx=P+20+pw+24}
     let yy=y+44;ctx.fillStyle="#15212b";ctx.font=`600 26px ${F}`;o.nl.forEach(l=>{ctx.fillText(l,tx,yy);yy+=34});
     ctx.fillStyle="#5b6b78";ctx.font=`400 20px ${F}`;o.dl.forEach(l=>{ctx.fillText(l,tx,yy-6);yy+=28});
@@ -816,7 +859,7 @@ async function orderImage(by,to,notes){const EN=LANG==="en";const L=EN?{t:"Order
   if(notesL.length){y+=36;ctx.fillStyle="#fbf3e6";rrect(ctx,P,y,W-2*P,notesL.length*32+60,14);ctx.fill();ctx.fillStyle="#a4400b";ctx.font=`700 18px ${F}`;ctx.fillText(L.notes.toUpperCase(),P+20,y+34);
     ctx.fillStyle="#15212b";ctx.font=`400 22px ${F}`;notesL.forEach((l,i)=>ctx.fillText(l,P+20,y+68+i*32));y+=notesL.length*32+60}
   ctx.fillStyle="#8a99a6";ctx.font=`400 18px ${F}`;ctx.textAlign="center";ctx.fillText(L.foot,W/2,H-40);ctx.textAlign="left";
-  return cv.toDataURL("image/png")}
+  return lay.some(o=>o.im)?cv.toDataURL("image/jpeg",.92):cv.toDataURL("image/png")}
 async function exportOrder(){const b=$("#oExp");if(b.disabled)return;
   if(CART.some(x=>!String(x.qty||"").trim())){toast("Falta a quantidade a encomendar em algum artigo.");return}
   b.disabled=true;b.textContent="A preparar…";
@@ -831,12 +874,12 @@ function showImage(url,name,driveUrl,fresh){openCode=null;const s=$("#sheet");s.
   ${fresh?`<div class="banner ok">Guardada no arquivo, na pasta “Encomendas exportadas” do Drive.</div>`:""}
   <img class="oimg" src="${url}" alt="Imagem da encomenda">
   <p class="hint">No telemóvel, mantém o dedo na imagem para a guardar ou partilhar.</p>
-  <div class="actions" style="justify-content:flex-start"><button id="iShare" class="primary">Partilhar</button><a class="ext" id="iDl" download="${esc(name||"encomenda.png")}" href="${url}">Descarregar</a>${driveUrl?`<a class="ext" href="${esc(driveUrl)}" target="_blank" rel="noopener">Abrir no Drive</a>`:""}
+  <div class="actions" style="justify-content:flex-start"><button id="iShare" class="primary">Partilhar</button><a class="ext" id="iDl" download="${esc(name||(url.startsWith("data:image/jpeg")?"encomenda.jpg":"encomenda.png"))}" href="${url}">Descarregar</a>${driveUrl?`<a class="ext" href="${esc(driveUrl)}" target="_blank" rel="noopener">Abrir no Drive</a>`:""}
   ${fresh?`<button id="iEmpty">Esvaziar a lista</button>`:""}</div>`;
   s.hidden=false;$("#scrim").hidden=false;$("#xClose").onclick=closeSheet;
-  if(AND){$("#iShare").onclick=()=>{if(!AND.partilhar(url,name||"encomenda.png"))toast("Não foi possível partilhar.")};
-    $("#iDl").onclick=e=>{e.preventDefault();toast(AND.guardar(url,name||"encomenda.png")?"Guardada em Transferências › BIOTOX.":"Não foi possível guardar. Usa Partilhar.")}}
-  else $("#iShare").onclick=async()=>{try{const blob=await (await fetch(url)).blob();const file=new File([blob],name||"encomenda.png",{type:"image/png"});
+  if(AND){$("#iShare").onclick=()=>{if(!AND.partilhar(url,name||(url.startsWith("data:image/jpeg")?"encomenda.jpg":"encomenda.png")))toast("Não foi possível partilhar.")};
+    $("#iDl").onclick=e=>{e.preventDefault();toast(AND.guardar(url,name||(url.startsWith("data:image/jpeg")?"encomenda.jpg":"encomenda.png"))?"Guardada em Transferências › BIOTOX.":"Não foi possível guardar. Usa Partilhar.")}}
+  else $("#iShare").onclick=async()=>{try{const blob=await (await fetch(url)).blob();const file=new File([blob],name||(url.startsWith("data:image/jpeg")?"encomenda.jpg":"encomenda.png"),{type:blob.type||"image/png"});
       if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name||"Encomenda BIOTOX"})}else throw new Error("x")}
     catch(e){toast("Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.")}};
   if($("#iEmpty"))$("#iEmpty").onclick=()=>{CART=[];saveCart();closeSheet();$("#view").dataset.v="";render();toast("Lista esvaziada.")}}

@@ -201,10 +201,15 @@ public class MainActivity extends Activity {
         else super.onBackPressed();
     }
 
-    private static String limparNome(String nome) {
-        String n = (nome == null || nome.trim().isEmpty()) ? "encomenda.png" : nome.trim();
+    private static boolean eJpeg(String dataUrl) {
+        return dataUrl != null && dataUrl.startsWith("data:image/jpeg");
+    }
+
+    private static String limparNome(String nome, String dataUrl) {
+        String ext = eJpeg(dataUrl) ? ".jpg" : ".png";
+        String n = (nome == null || nome.trim().isEmpty()) ? "encomenda" + ext : nome.trim();
         n = n.replaceAll("[^A-Za-z0-9._ -]", "_");
-        if (!n.toLowerCase().endsWith(".png")) n += ".png";
+        if (!n.toLowerCase().endsWith(ext)) n = n.replaceAll("\\.(png|jpe?g)$", "") + ext;
         return n;
     }
 
@@ -225,11 +230,11 @@ public class MainActivity extends Activity {
             try {
                 File pasta = new File(getCacheDir(), "partilha");
                 pasta.mkdirs();
-                File f = new File(pasta, limparNome(nome));
+                File f = new File(pasta, limparNome(nome, dataUrl));
                 try (FileOutputStream o = new FileOutputStream(f)) { o.write(bytesDe(dataUrl)); }
                 Uri u = Uri.parse("content://" + getPackageName() + ".ficheiros/" + Uri.encode(f.getName()));
                 Intent i = new Intent(Intent.ACTION_SEND)
-                        .setType("image/png")
+                        .setType(eJpeg(dataUrl) ? "image/jpeg" : "image/png")
                         .putExtra(Intent.EXTRA_STREAM, u)
                         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 i.setClipData(ClipData.newRawUri(f.getName(), u));
@@ -245,8 +250,8 @@ public class MainActivity extends Activity {
             if (Build.VERSION.SDK_INT < 29) return false;
             try {
                 ContentValues cv = new ContentValues();
-                cv.put(MediaStore.MediaColumns.DISPLAY_NAME, limparNome(nome));
-                cv.put(MediaStore.MediaColumns.MIME_TYPE, "image/png");
+                cv.put(MediaStore.MediaColumns.DISPLAY_NAME, limparNome(nome, dataUrl));
+                cv.put(MediaStore.MediaColumns.MIME_TYPE, eJpeg(dataUrl) ? "image/jpeg" : "image/png");
                 cv.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/BIOTOX");
                 Uri u = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cv);
                 if (u == null) return false;
