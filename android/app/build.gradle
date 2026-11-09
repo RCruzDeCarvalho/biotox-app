@@ -1,0 +1,41 @@
+plugins { id 'com.android.application' }
+
+// O número da versão vem da publicação automática (GitHub Actions)
+def versao = System.getenv('VERSAO') ?: '1.0'
+def codigo = (System.getenv('VERSAO_CODIGO') ?: '1').toInteger()
+
+android {
+    namespace 'pt.biotox.stocks'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'pt.biotox.stocks'
+        minSdk 26
+        targetSdk 34
+        versionCode codigo
+        versionName versao
+    }
+
+    signingConfigs {
+        lab {
+            storeFile file('../biotox.keystore')
+            storePassword 'biotox-lab'
+            keyAlias 'biotox'
+            keyPassword 'biotox-lab'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.lab
+        }
+    }
+
+    buildFeatures { buildConfig true }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

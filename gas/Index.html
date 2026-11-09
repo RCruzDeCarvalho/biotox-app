@@ -125,6 +125,7 @@ a.ext:hover{background:var(--accent-soft)}
 .nav button[aria-pressed="true"]{background:var(--accent-soft);color:var(--ink)}
 .badge{background:var(--warn);color:#fff;font-size:11px;min-width:18px;height:18px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px;font-family:var(--f-mono)}
 @media (max-width:640px){.nav button span{display:none}.nav button{padding:8px 11px}.nav{justify-content:space-between}}
+.ver{margin:22px 4px 4px;color:var(--muted);font-size:13px;text-align:center}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 .tile{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:18px;border-radius:12px;background:var(--surface);border:1px solid var(--line);text-align:left}
 .tile:hover{border-color:var(--accent)}.tile .ti{width:48px;height:48px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center}
@@ -239,7 +240,7 @@ const DICT={
 "Falta a quantidade a encomendar em algum artigo.":"An item is missing the quantity to order.","Encomenda exportada":"Order exported","Encomenda":"Order",
 "Guardada no arquivo, na pasta “Encomendas exportadas” do Drive.":"Saved to the archive, in the “Encomendas exportadas” folder on Drive.","Imagem da encomenda":"Order image",
 "No telemóvel, mantém o dedo na imagem para a guardar ou partilhar.":"On a phone, press and hold the image to save or share it.","Partilhar":"Share","Descarregar":"Download","Abrir no Drive":"Open in Drive","Esvaziar a lista":"Empty the list",
-"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Lista esvaziada.":"List emptied.",
+"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Lista esvaziada.":"List emptied.",
 "A abrir o arquivo":"Opening the archive","A ler a pasta de encomendas no Drive…":"Reading the orders folder on Drive…","Não foi possível abrir o arquivo":"Could not open the archive",
 "Encomendas exportadas, da mais recente para a mais antiga.":"Exported orders, newest first.","Abrir a pasta no Drive":"Open the folder in Drive","Ver":"View","Apagar":"Delete",
 "Ainda não há exportações":"No exports yet","Quando exportares uma encomenda, a imagem fica guardada aqui.":"When you export an order, the image is saved here.",
@@ -295,6 +296,7 @@ const DICT={
 "Módulo":"Module","Vista":"View","Vista de consumíveis":"Consumables view","Local":"Location","Mínimo":"Minimum","FDS":"SDS","FDS associada":"SDS linked","FDS removida":"SDS removed"
 };
 const RX=[
+[/^Stocks BIOTOX · versão (.+)$/,(m,a)=>`Stocks BIOTOX · version ${a}`],
 [/^(\d+) artigos na encomenda$/,(m,a)=>`${a} items in the order`],[/^(\d+) na lista$/,(m,a)=>`${a} in the list`],[/^(\d+) exportações$/,(m,a)=>`${a} exports`],
 [/^Olá, (.+)$/,(m,a)=>`Hello, ${a}`],[/^(\d+) artigos · (\d+) em falta$/,(m,a,b)=>`${a} items · ${b} low`],[/^(\d+) frascos activos$/,(m,a)=>`${a} active bottles`],
 [/^Não foi possível exportar\. ?(.*)$/,(m,a)=>`Could not export. ${a}`],
@@ -617,11 +619,14 @@ function setMode(m){if(m==="set"&&PAPEL!=="editar")m="home";MODE=m;try{localStor
   ["#rowQ","#rowF","#lnkFds"].forEach(id=>$(id).hidden=m!=="reag");$("#consBar").hidden=m!=="cons";
   $("#btnNew").hidden=m!=="reag"||PAPEL!=="editar";$("#cNew").hidden=m!=="cons"||PAPEL!=="editar";$("#navSet").hidden=PAPEL!=="editar";
   closeSheet();$("#view").dataset.v="";render();updateBadge();try{scrollTo(0,0)}catch(e){}}
+const VERSAO="__VERSAO__";const AND=window.BiotoxAndroid||null;
+function verHTML(){const v=VERSAO.indexOf("__")<0?VERSAO:"";const apk=!AND&&/Android/i.test(navigator.userAgent);
+  return `<p class="ver">Stocks BIOTOX${v?" · versão "+esc(v):""}${apk?` · <a class="lnk" href="https:\/\/github.com/RCruzDeCarvalho/biotox-app/releases/latest/download/StocksBIOTOX.apk" target="_blank" rel="noopener">Instalar a app Android</a>`:""}</p>`}
 function renderHome(){const v=$("#view");$("#stat").textContent=me?`Olá, ${me}`:"";
   const nLow=cons.filter(isLow).length,act=items.filter(i=>i.status==="Em stock"||i.status==="Em uso").length;
   const tiles=[["reag","Reagentes",`${act} frascos activos`],["cons","Consumíveis",nLow?`${cons.length} artigos · ${nLow} em falta`:`${cons.length} artigos`],["order","Encomendas a fazer",CART.length?`${CART.length} na lista`:"Lista vazia"],["arch","Arquivo","Encomendas exportadas"]];
   if(PAPEL==="editar")tiles.push(["set","Definições","Mínimos de stock"]);
-  v.innerHTML=`<div class="tiles">${tiles.map(([m,t,s])=>`<button class="tile" data-go="${m}"><span class="ti">${IC[m]}</span><span class="tt">${t}</span><span class="ts">${esc(s)}</span></button>`).join("")}</div>`;
+  v.innerHTML=`<div class="tiles">${tiles.map(([m,t,s])=>`<button class="tile" data-go="${m}"><span class="ti">${IC[m]}</span><span class="tt">${t}</span><span class="ts">${esc(s)}</span></button>`).join("")}</div>+verHTML();
   v.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>setMode(b.dataset.go))}
 function renderOrder(){const v=$("#view");
   if(v.dataset.v==="order"&&v.contains(document.activeElement)&&document.activeElement.matches("input,textarea"))return;v.dataset.v="order";
@@ -696,7 +701,9 @@ function showImage(url,name,driveUrl,fresh){openCode=null;const s=$("#sheet");s.
   <div class="actions" style="justify-content:flex-start"><button id="iShare" class="primary">Partilhar</button><a class="ext" id="iDl" download="${esc(name||"encomenda.png")}" href="${url}">Descarregar</a>${driveUrl?`<a class="ext" href="${esc(driveUrl)}" target="_blank" rel="noopener">Abrir no Drive</a>`:""}
   ${fresh?`<button id="iEmpty">Esvaziar a lista</button>`:""}</div>`;
   s.hidden=false;$("#scrim").hidden=false;$("#xClose").onclick=closeSheet;
-  $("#iShare").onclick=async()=>{try{const blob=await (await fetch(url)).blob();const file=new File([blob],name||"encomenda.png",{type:"image/png"});
+  if(AND){$("#iShare").onclick=()=>{if(!AND.partilhar(url,name||"encomenda.png"))toast("Não foi possível partilhar.")};
+    $("#iDl").onclick=e=>{e.preventDefault();toast(AND.guardar(url,name||"encomenda.png")?"Guardada em Transferências › BIOTOX.":"Não foi possível guardar. Usa Partilhar.")}}
+  else $("#iShare").onclick=async()=>{try{const blob=await (await fetch(url)).blob();const file=new File([blob],name||"encomenda.png",{type:"image/png"});
       if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name||"Encomenda BIOTOX"})}else throw new Error("x")}
     catch(e){toast("Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.")}};
   if($("#iEmpty"))$("#iEmpty").onclick=()=>{CART=[];saveCart();closeSheet();$("#view").dataset.v="";render();toast("Lista esvaziada.")}}

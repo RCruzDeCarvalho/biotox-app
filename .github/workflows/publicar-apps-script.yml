@@ -1,10 +1,11 @@
 name: Publicar no Apps Script
+# Publica a app web (Apps Script) e gera o APK Android com o mesmo número de versão: 1.<n.º da publicação>
 
 # Corre sempre que algo muda na pasta gas/ (ou à mão, no separador Actions)
 on:
   push:
     branches: [main]
-    paths: ['gas/**', '.github/workflows/publicar-apps-script.yml']
+    paths: ['gas/**', 'android/**', '.github/workflows/publicar-apps-script.yml']
   workflow_dispatch:
 
 concurrency:
@@ -14,6 +15,8 @@ concurrency:
 env:
   # Implantação usada pela app e pela página do GitHub (o URL /exec)
   DEPLOYMENT_ID: AKfycbx9HH_lKO63o3ymynADu616Wb6Ne__e4XcXsqm1nuGLXzD2t1ljFjdROBXNz23WC7m_8A
+  VERSAO: 1.${{ github.run_number }}
+  VERSAO_CODIGO: ${{ github.run_number }}
 
 jobs:
   publicar:
@@ -66,6 +69,9 @@ jobs:
           t = open(p, encoding='utf-8').read()
           t = t.replace('__CODIGO_LAB__', esc(lab)).replace('__CODIGO_CONSULTA__', esc(con))
           open(p, 'w', encoding='utf-8').write(t)
+          p = 'gas/Index.html'
+          t = open(p, encoding='utf-8').read().replace('__VERSAO__', os.environ['VERSAO'])
+          open(p, 'w', encoding='utf-8').write(t)
           PY
 
       - name: Enviar o código
@@ -77,9 +83,41 @@ jobs:
         if: steps.chk.outputs.ready == 'true'
         working-directory: gas
         run: |
-          MSG="GitHub ${GITHUB_SHA::7} $(date -u +'%Y-%m-%d %H:%M')"
+          MSG="v$VERSAO · GitHub ${GITHUB_SHA::7} $(date -u +'%Y-%m-%d %H:%M')"
           OUT=$(clasp version "$MSG")
           echo "$OUT"
           V=$(echo "$OUT" | grep -o '[0-9]\+' | tail -1)
           clasp deploy --deploymentId "$DEPLOYMENT_ID" --versionNumber "$V" --description "$MSG"
           echo "Publicada a versão $V na implantação da app."
+
+  apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Compilar o APK
+        working-directory: android
+        run: gradle --no-daemon assembleRelease
+
+      - name: Publicar o APK nas Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          cp "$APK" "StocksBIOTOX-v$VERSAO.apk"
+          cp "$APK" StocksBIOTOX.apk
+          gh release create "v$VERSAO" "StocksBIOTOX-v$VERSAO.apk" StocksBIOTOX.apk \
+            --title "Stocks BIOTOX $VERSAO" --latest \
+            --notes "Versão $VERSAO da app Android. Link fixo para a versão mais recente: https://github.com/${{ github.repository }}/releases/latest/download/StocksBIOTOX.apk"
+          echo "APK v$VERSAO publicado."
