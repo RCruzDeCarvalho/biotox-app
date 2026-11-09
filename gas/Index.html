@@ -626,7 +626,7 @@ function renderHome(){const v=$("#view");$("#stat").textContent=me?`Olá, ${me}`
   const nLow=cons.filter(isLow).length,act=items.filter(i=>i.status==="Em stock"||i.status==="Em uso").length;
   const tiles=[["reag","Reagentes",`${act} frascos activos`],["cons","Consumíveis",nLow?`${cons.length} artigos · ${nLow} em falta`:`${cons.length} artigos`],["order","Encomendas a fazer",CART.length?`${CART.length} na lista`:"Lista vazia"],["arch","Arquivo","Encomendas exportadas"]];
   if(PAPEL==="editar")tiles.push(["set","Definições","Mínimos de stock"]);
-  v.innerHTML=`<div class="tiles">${tiles.map(([m,t,s])=>`<button class="tile" data-go="${m}"><span class="ti">${IC[m]}</span><span class="tt">${t}</span><span class="ts">${esc(s)}</span></button>`).join("")}</div>+verHTML();
+  v.innerHTML=`<div class="tiles">${tiles.map(([m,t,s])=>`<button class="tile" data-go="${m}"><span class="ti">${IC[m]}</span><span class="tt">${t}</span><span class="ts">${esc(s)}</span></button>`).join("")}</div>`+verHTML();
   v.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>setMode(b.dataset.go))}
 function renderOrder(){const v=$("#view");
   if(v.dataset.v==="order"&&v.contains(document.activeElement)&&document.activeElement.matches("input,textarea"))return;v.dataset.v="order";

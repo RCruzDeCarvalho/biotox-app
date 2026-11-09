@@ -79,6 +79,22 @@ jobs:
           open(p, 'w', encoding='utf-8').write(t)
           PY
 
+      - name: Verificar o código antes de publicar
+        if: steps.chk.outputs.ready == 'true'
+        run: |
+          python3 - <<'PY'
+          import re, sys
+          t = open('gas/Index.html', encoding='utf-8').read()
+          for i, s in enumerate(re.findall(r'<script>(.*?)</script>', t, re.S)):
+              open(f'/tmp/s{i}.js', 'w', encoding='utf-8').write(s)
+              for n, l in enumerate(s.split('\n'), 1):
+                  if '//' in l.replace('\\/\\/', ''):
+                      sys.exit(f'Index.html: "//" num script (o Apps Script apaga-o): {l.strip()[:120]}')
+          PY
+          for f in /tmp/s*.js; do node --check "$f"; done
+          cp gas/Code.gs /tmp/code.js && node --check /tmp/code.js
+          echo "Código sem erros de sintaxe."
+
       - name: Enviar o código
         if: steps.chk.outputs.ready == 'true'
         working-directory: gas
