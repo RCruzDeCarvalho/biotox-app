@@ -254,7 +254,7 @@ const DICT={
 "Falta a quantidade a encomendar em algum artigo.":"An item is missing the quantity to order.","Encomenda exportada":"Order exported","Encomenda":"Order",
 "Guardada no arquivo, na pasta “Encomendas exportadas” do Drive.":"Saved to the archive, in the “Encomendas exportadas” folder on Drive.","Imagem da encomenda":"Order image",
 "No telemóvel, mantém o dedo na imagem para a guardar ou partilhar.":"On a phone, press and hold the image to save or share it.","Partilhar":"Share","Descarregar":"Download","Abrir no Drive":"Open in Drive","Esvaziar a lista":"Empty the list",
-"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
+"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Abrir a pasta das fotografias":"Open the photos folder","A procurar a pasta…":"Looking for the folder…","As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.":"Reagent and consumable photos are kept in Drive, in the Lab Stock › Photos folder.","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
 "A abrir o arquivo":"Opening the archive","A ler a pasta de encomendas no Drive…":"Reading the orders folder on Drive…","Não foi possível abrir o arquivo":"Could not open the archive",
 "Encomendas exportadas, da mais recente para a mais antiga.":"Exported orders, newest first.","Abrir a pasta no Drive":"Open the folder in Drive","Ver":"View","Apagar":"Delete",
 "Ainda não há exportações":"No exports yet","Quando exportares uma encomenda, a imagem fica guardada aqui.":"When you export an order, the image is saved here.",
@@ -694,12 +694,12 @@ const blobB64=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>r
 async function importarFotos(){if(IMPORT||PAPEL!=="editar"||!PIN)return;
   const nomes=[...new Set(items.map(i=>String(i.photo||"").trim()).filter(v=>/^[\w.-]+\.jpe?g$/i.test(v)))];if(!nomes.length)return;
   IMPORT=true;const BASE="https:\/\/rcruzdecarvalho.github.io/biotox-app/fotos-import/";const total=nomes.length;let feitos=0,falhas=0,parar=false;
-  const lotes=[];for(let i=0;i<nomes.length;i+=6)lotes.push(nomes.slice(i,i+6));
+  const lotes=[];for(let i=0;i<nomes.length;i+=4)lotes.push(nomes.slice(i,i+4));
   progresso(`A importar as fotografias dos reagentes… 0/${total}`);
   const trabalhador=async()=>{while(lotes.length&&!parar){const g=lotes.shift();const lote=[];
     for(const n of g){try{const r=await fetch(BASE+encodeURIComponent(n),{cache:"no-store"});if(!r.ok)throw new Error(r.status);lote.push({nome:n,base64:await blobB64(await r.blob())})}catch(e){falhas++}}
-    if(lote.length){try{const r=await call("importarFotosIniciais",PIN,lote);(r.feitos||[]).forEach(f=>{const it=items.find(x=>x.code===f.code);if(it)it.photo=f.photo})}
-      catch(e){falhas+=lote.length;const m=String(e&&e.message||e);if(m.includes("SO_CONSULTA")||m.includes("CODIGO_ERRADO"))parar=true}}
+    for(let tent=0;lote.length&&tent<3;tent++){try{const r=await call("importarFotosIniciais",PIN,lote);(r.feitos||[]).forEach(f=>{const it=items.find(x=>x.code===f.code);if(it)it.photo=f.photo});break}
+      catch(e){const m=String(e&&e.message||e);if(m.includes("SO_CONSULTA")||m.includes("CODIGO_ERRADO")){parar=true;break}if(tent===2)falhas+=lote.length;else await new Promise(r=>setTimeout(r,3000))}}
     feitos+=g.length;progresso(`A importar as fotografias dos reagentes… ${Math.min(feitos,total)}/${total}`);
     if(MODE==="reag"&&$("#sheet").hidden){$("#view").dataset.v="";render()}}};
   try{await Promise.all([trabalhador(),trabalhador()])}finally{IMPORT=false;progresso(null)}
@@ -814,7 +814,10 @@ function renderSet(){const v=$("#view");if(PAPEL!=="editar"){setMode("home");ret
   <label class="srow"><span>Mínimo para tipos novos<small>usado quando um tipo não tem mínimo próprio</small></span><input type="number" min="0" step="1" inputmode="numeric" id="sDef" value="${esc(DEFS.minDefault)}"></label></div>
   <label class="chk" style="margin:12px 0"><input type="checkbox" id="sApply" checked> Aplicar já a todos os consumíveis destes tipos</label>
   <p class="hint">Se desligares esta opção, os mínimos só valem para artigos novos. Podes sempre mudar o mínimo de um artigo na ficha dele.</p>
-  <div class="actions"><button class="primary" id="sSave">Guardar definições</button></div>`;
+  <div class="actions"><button class="primary" id="sSave">Guardar definições</button></div>
+  <h2 class="ptitle" style="margin-top:28px">Fotografias</h2><p class="pintro">As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.</p>
+  <div class="actions" style="justify-content:flex-start" id="sFotos"><span class="hint">A procurar a pasta…</span></div>`;
+  call("pastaDasFotos",PIN).then(u=>{const el=$("#sFotos");if(el)el.innerHTML=`<a class="ext" href="${esc(u)}" target="_blank" rel="noopener">Abrir a pasta das fotografias</a>`}).catch(err=>{const el=$("#sFotos");if(el)el.innerHTML=`<span class="hint">${esc(errMsg(err))}</span>`});
   $("#sSave").onclick=async e=>{const b=e.currentTarget;const mins={};v.querySelectorAll("input[data-t]").forEach(i=>{if(i.value!=="")mins[i.dataset.t]=Math.max(0,parseInt(i.value,10)||0)});
     b.disabled=true;try{const d=await call("guardarDefinicoes",PIN,{minDefault:Math.max(0,parseInt($("#sDef").value,10)||0),mins},$("#sApply").checked,me);v.dataset.v="";applyData(d);toast("Definições guardadas.")}catch(err){toast(errMsg(err))}finally{if(b.isConnected)b.disabled=false}}}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setMode(b.dataset.m));

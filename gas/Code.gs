@@ -460,10 +460,37 @@ function subpasta_(pai, nome) {
   const it = pai.getFoldersByName(nome);
   return it.hasNext() ? it.next() : pai.createFolder(nome);
 }
+// Guarda o ID da pasta para não criar pastas repetidas quando há várias fotografias a chegar ao mesmo tempo.
+// Se já existirem pastas repetidas, junta tudo na primeira e manda as outras para o lixo.
 function pastaFotos_(nome) {
-  const raiz = subpasta_(DriveApp.getFolderById(PASTA_BASE_ID), PASTA_FOTOS);
-  const p = subpasta_(raiz, nome);
-  return p;
+  const props = PropertiesService.getScriptProperties(), chave = 'pastaFotos:' + nome;
+  const guardado = props.getProperty(chave);
+  if (guardado) { try { const f = DriveApp.getFolderById(guardado); if (!f.isTrashed()) return f; } catch (e) { } }
+  const lock = LockService.getScriptLock(); lock.waitLock(30000);
+  try {
+    const base = DriveApp.getFolderById(PASTA_BASE_ID);
+    const listar = (pai, n) => { const out = [], it = pai.getFoldersByName(n); while (it.hasNext()) { const f = it.next(); if (!f.isTrashed()) out.push(f); } return out; };
+    const juntar = (de, para) => {
+      const fs = de.getFiles(); while (fs.hasNext()) fs.next().moveTo(para);
+      const ss = de.getFolders(); while (ss.hasNext()) { const s = ss.next(); const alvo = listar(para, s.getName())[0]; if (alvo) juntar(s, alvo); else s.moveTo(para); }
+      de.setTrashed(true);
+    };
+    const raizes = listar(base, PASTA_FOTOS);
+    const raiz = raizes[0] || base.createFolder(PASTA_FOTOS);
+    raizes.slice(1).forEach(r => juntar(r, raiz));
+    const subs = listar(raiz, nome);
+    const p = subs[0] || raiz.createFolder(nome);
+    subs.slice(1).forEach(s => juntar(s, p));
+    props.setProperty(chave, p.getId());
+    return p;
+  } finally { lock.releaseLock(); }
+}
+
+/* Link da pasta das fotografias, para as Definições (também arruma pastas repetidas) */
+function pastaDasFotos(pin) {
+  verificar_(pin);
+  pastaFotos_('Reagentes'); pastaFotos_('Consumíveis');
+  return pastaFotos_('Reagentes').getParents().next().getUrl();
 }
 function idsFoto_(v) {
   return String(v || '').split(/[,\s]+/).filter(x => /^[\w-]{20,}$/.test(x));
