@@ -142,8 +142,7 @@ jobs:
         run: |
           APK=android/app/build/outputs/apk/release/app-release.apk
           cp "$APK" "StocksBIOTOX-v$VERSAO.apk"
-          cp "$APK" StocksBIOTOX.apk
-          gh release create "v$VERSAO" "StocksBIOTOX-v$VERSAO.apk" StocksBIOTOX.apk \
+          gh release create "v$VERSAO" "StocksBIOTOX-v$VERSAO.apk" \
             --title "Stocks BIOTOX $VERSAO" --latest \
-            --notes "Versão $VERSAO da app Android. Link fixo para a versão mais recente: https://github.com/${{ github.repository }}/releases/latest/download/StocksBIOTOX.apk"
+            --notes "Versão $VERSAO da app Android. A versão mais recente está sempre em https://github.com/${{ github.repository }}/releases/latest"
           echo "APK v$VERSAO publicado."

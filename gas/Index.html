@@ -752,7 +752,7 @@ async function importarFotos(){if(IMPORT||PAPEL!=="editar"||!PIN)return;
   toast(falhas?`Fotografias importadas, ${falhas} não deu.`:"Fotografias dos reagentes importadas.");if(MODE==="reag"||MODE==="home")render()}
 const VERSAO="__VERSAO__";const AND=window.BiotoxAndroid||null;
 function verHTML(){const v=VERSAO.indexOf("__")<0?VERSAO:"";const apk=!AND&&/Android/i.test(navigator.userAgent);
-  return `<p class="ver">Stocks BIOTOX${v?" · versão "+esc(v):""}${apk?` · <a class="lnk" href="https:\/\/github.com/RCruzDeCarvalho/biotox-app/releases/latest/download/StocksBIOTOX.apk" target="_blank" rel="noopener">Instalar a app Android</a>`:""}</p>`}
+  return `<p class="ver">Stocks BIOTOX${v?" · versão "+esc(v):""}${apk?` · <a class="lnk" href="https:\/\/github.com/RCruzDeCarvalho/biotox-app/releases/latest" target="_blank" rel="noopener">Instalar a app Android</a>`:""}</p>`}
 function renderHome(){const v=$("#view");$("#stat").textContent=me?`Olá, ${me}`:"";
   const nLow=cons.filter(isLow).length,act=items.filter(i=>i.status==="Em stock"||i.status==="Em uso").length;
   const tiles=[["reag","Reagentes",`${act} frascos activos`],["cons","Consumíveis",nLow?`${cons.length} artigos · ${nLow} em falta`:`${cons.length} artigos`],["order","Encomendas a fazer",CART.length?`${CART.length} na lista`:"Lista vazia"],["arch","Arquivo","Encomendas exportadas"]];
