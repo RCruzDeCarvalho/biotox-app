@@ -278,7 +278,7 @@ const DICT={
 "Falta a quantidade a encomendar em algum artigo.":"An item is missing the quantity to order.","Encomenda exportada":"Order exported","Encomenda":"Order",
 "Guardada no arquivo, na pasta “Encomendas exportadas” do Drive.":"Saved to the archive, in the “Encomendas exportadas” folder on Drive.","Imagem da encomenda":"Order image",
 "No telemóvel, mantém o dedo na imagem para a guardar ou partilhar.":"On a phone, press and hold the image to save or share it.","Partilhar":"Share","Descarregar":"Download","Abrir no Drive":"Open in Drive","Esvaziar a lista":"Empty the list",
-"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Filtros":"Filters","Fotografia na encomenda":"Photo in the order","Usar esta fotografia":"Use this photo","Abrir a pasta das fotografias":"Open the photos folder","A procurar a pasta…":"Looking for the folder…","As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.":"Reagent and consumable photos are kept in Drive, in the Lab Stock › Photos folder.","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
+"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Guardada no arquivo, na pasta “Encomendas exportadas” do Drive. A lista de encomendas foi esvaziada.":"Saved to the archive, in the “Encomendas exportadas” Drive folder. The order list has been emptied.","Este browser não deixa partilhar ficheiros. Descarrega a imagem e partilha-a a partir da galeria.":"This browser can’t share files. Download the image and share it from your gallery.","Não foi possível partilhar. Usa Descarregar.":"Could not share. Use Download instead.","Filtros":"Filters","Fotografia na encomenda":"Photo in the order","Usar esta fotografia":"Use this photo","Abrir a pasta das fotografias":"Open the photos folder","A procurar a pasta…":"Looking for the folder…","As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.":"Reagent and consumable photos are kept in Drive, in the Lab Stock › Photos folder.","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
 "A abrir o arquivo":"Opening the archive","A ler a pasta de encomendas no Drive…":"Reading the orders folder on Drive…","Não foi possível abrir o arquivo":"Could not open the archive",
 "Encomendas exportadas, da mais recente para a mais antiga.":"Exported orders, newest first.","Abrir a pasta no Drive":"Open the folder in Drive","Ver":"View","Apagar":"Delete",
 "Ainda não há exportações":"No exports yet","Quando exportares uma encomenda, a imagem fica guardada aqui.":"When you export an order, the image is saved here.",
@@ -866,23 +866,35 @@ async function exportOrder(){const b=$("#oExp");if(b.disabled)return;
   try{const by=$("#oBy").value.trim(),to=$("#oTo").value.trim(),notes=$("#oNotes").value.trim();
     const url=await orderImage(by,to,notes);
     const r=await call("exportarEncomenda",PIN,url,{n:CART.length},by||me);
+    CART=[];saveCart();$("#view").dataset.v="";render();
     showImage(url,r.name,r.url,true)}
   catch(e){toast("Não foi possível exportar. "+String(e&&e.message||e).replace(/^Error:\s*/,""))}
   finally{if(b.isConnected){b.disabled=false;b.textContent=tr("Exportar imagem")}}}
+/* Pede à página de cima (GitHub Pages / app Android) que trate do pedido; null se ninguém responder */
+function pedirTopo(type,url,name){return new Promise(res=>{if(window.top===window)return res(null);const id=Math.random().toString(36).slice(2);let ack=false;
+  const fim=v=>{removeEventListener("message",h);clearTimeout(t1);res(v)};
+  const h=e=>{const d=e.data||{};if(d.type!==type+"-r"||d.id!==id)return;if(d.ack){ack=true;return}if(d.done)fim(d)};
+  addEventListener("message",h);const t1=setTimeout(()=>{if(!ack)fim(null)},1500);
+  try{window.top.postMessage({type,id,url,name,title:"Encomenda BIOTOX"},"https:\/\/rcruzdecarvalho.github.io")}catch(e){fim(null)}})}
+async function partilharImagem(url,nm){
+  if(AND){if(!AND.partilhar(url,nm))toast("Não foi possível partilhar.");return}
+  const r=await pedirTopo("btx-share",url,nm);
+  if(r){if(!r.ok&&r.msg!=="AbortError")toast(r.msg==="sem-suporte"?"Este browser não deixa partilhar ficheiros. Descarrega a imagem e partilha-a a partir da galeria.":"Não foi possível partilhar. Usa Descarregar.");return}
+  try{const blob=await (await fetch(url)).blob();const file=new File([blob],nm,{type:blob.type||"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:"Encomenda BIOTOX"});else throw new Error("sem-suporte")}
+  catch(e){if(e&&e.name!=="AbortError")toast("Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.")}}
 function showImage(url,name,driveUrl,fresh){openCode=null;const s=$("#sheet");s.style.setProperty("--hz","var(--accent)");
   s.innerHTML=`<div class="hd"><div><h2>${fresh?"Encomenda exportada":"Encomenda"}</h2><div class="stat">${esc(name||"")}</div></div><button id="xClose">Fechar</button></div>
-  ${fresh?`<div class="banner ok">Guardada no arquivo, na pasta “Encomendas exportadas” do Drive.</div>`:""}
+  ${fresh?`<div class="banner ok">Guardada no arquivo, na pasta “Encomendas exportadas” do Drive. A lista de encomendas foi esvaziada.</div>`:""}
   <img class="oimg" src="${url}" alt="Imagem da encomenda">
   <p class="hint">No telemóvel, mantém o dedo na imagem para a guardar ou partilhar.</p>
   <div class="actions" style="justify-content:flex-start"><button id="iShare" class="primary">Partilhar</button><a class="ext" id="iDl" download="${esc(name||(url.startsWith("data:image/jpeg")?"encomenda.jpg":"encomenda.png"))}" href="${url}">Descarregar</a>${driveUrl?`<a class="ext" href="${esc(driveUrl)}" target="_blank" rel="noopener">Abrir no Drive</a>`:""}
-  ${fresh?`<button id="iEmpty">Esvaziar a lista</button>`:""}</div>`;
+</div>`;
   s.hidden=false;$("#scrim").hidden=false;$("#xClose").onclick=closeSheet;
-  if(AND){$("#iShare").onclick=()=>{if(!AND.partilhar(url,name||(url.startsWith("data:image/jpeg")?"encomenda.jpg":"encomenda.png")))toast("Não foi possível partilhar.")};
-    $("#iDl").onclick=e=>{e.preventDefault();toast(AND.guardar(url,name||(url.startsWith("data:image/jpeg")?"encomenda.jpg":"encomenda.png"))?"Guardada em Transferências › BIOTOX.":"Não foi possível guardar. Usa Partilhar.")}}
-  else $("#iShare").onclick=async()=>{try{const blob=await (await fetch(url)).blob();const file=new File([blob],name||(url.startsWith("data:image/jpeg")?"encomenda.jpg":"encomenda.png"),{type:blob.type||"image/png"});
-      if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name||"Encomenda BIOTOX"})}else throw new Error("x")}
-    catch(e){toast("Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.")}};
-  if($("#iEmpty"))$("#iEmpty").onclick=()=>{CART=[];saveCart();closeSheet();$("#view").dataset.v="";render();toast("Lista esvaziada.")}}
+  const nm=name||(url.startsWith("data:image/jpeg")?"encomenda.jpg":"encomenda.png");
+  $("#iShare").onclick=()=>partilharImagem(url,nm);
+  if(AND)$("#iDl").onclick=e=>{e.preventDefault();toast(AND.guardar(url,nm)?"Guardada em Transferências › BIOTOX.":"Não foi possível guardar. Usa Partilhar.")};
+}
 async function renderArch(force){const v=$("#view");v.dataset.v="arch";$("#stat").textContent="";
   if(!ARCH||force){v.innerHTML=`<h2 class="ptitle">Arquivo</h2><div class="list"><div class="empty"><strong>A abrir o arquivo</strong>A ler a pasta de encomendas no Drive…</div></div>`;
     try{ARCH=await call("listarArquivo",PIN)}catch(e){v.innerHTML=`<h2 class="ptitle">Arquivo</h2><div class="list"><div class="empty"><strong>Não foi possível abrir o arquivo</strong>${esc(String(e&&e.message||e))}</div></div>`;return}

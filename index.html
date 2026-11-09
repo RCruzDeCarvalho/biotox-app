@@ -31,6 +31,31 @@
   function net(){ const on = navigator.onLine; document.getElementById('app').style.display = on ? 'block' : 'none'; document.getElementById('off').style.display = on ? 'none' : 'block'; }
   addEventListener('online', () => { net(); document.getElementById('app').src = document.getElementById('app').src; });
   addEventListener('offline', net); if (U.endsWith('/exec')) net();
+
+  // Partilhar / guardar a imagem da encomenda. A app corre dentro de molduras do Google que não deixam
+  // abrir o menu de partilha do telemóvel, por isso pede a esta página (a de cima) que o faça.
+  addEventListener('message', async e => {
+    const d = e.data || {};
+    if (d.type !== 'btx-share' && d.type !== 'btx-save') return;
+    let host = ''; try { host = new URL(e.origin).hostname; } catch (_) {}
+    if (!/\.googleusercontent\.com$/.test(host)) return;
+    const reply = (extra) => { try { e.source.postMessage(Object.assign({ type: d.type + '-r', id: d.id }, extra), e.origin); } catch (_) {} };
+    reply({ ack: true });
+    const A = window.BiotoxAndroid;
+    try {
+      if (A) return reply({ ok: !!(d.type === 'btx-share' ? A.partilhar(d.url, d.name) : A.guardar(d.url, d.name)), done: true, android: true });
+      if (d.type === 'btx-save') {
+        const a = document.createElement('a'); a.href = d.url; a.download = d.name || 'encomenda';
+        document.body.appendChild(a); a.click(); a.remove(); return reply({ ok: true, done: true });
+      }
+      const blob = await (await fetch(d.url)).blob();
+      const file = new File([blob], d.name || 'encomenda', { type: blob.type });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: d.title || 'Encomenda BIOTOX' });
+        reply({ ok: true, done: true });
+      } else reply({ ok: false, done: true, msg: 'sem-suporte' });
+    } catch (err) { reply({ ok: false, done: true, msg: (err && err.name) || 'erro' }); }
+  });
 </script>
 </body>
 </html>
