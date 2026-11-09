@@ -135,7 +135,9 @@ a.ext:hover{background:var(--accent-soft)}
 .pick{display:flex;align-items:center;padding:0 4px 0 12px;cursor:pointer}.pick input{width:20px;height:20px;accent-color:var(--accent);cursor:pointer}
 .crow{grid-template-columns:auto minmax(0,1fr) auto!important}.crow .sub{grid-column:2/3!important}.crow .pick{grid-row:1/3;padding:0 2px 0 0}
 .th{flex:none;position:relative;width:46px;height:46px;margin:8px 2px 8px 6px;border-radius:8px;border:1.5px dashed var(--line);background:transparent;padding:0;overflow:hidden;display:block;cursor:pointer;align-self:center;min-height:0}
-.th.has{border:1px solid var(--line);background:#fff}.th.ro:not(.has){cursor:default}.th img{width:100%;height:100%;object-fit:cover;display:block}
+.th.has{border:1px solid var(--line);background:#fff}
+.ofotos{grid-column:1/-1;flex-basis:100%;display:flex;flex-direction:column;gap:6px;margin-top:4px}.ofotos>span{font-size:12px;color:var(--muted)}.ofotos>div{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ofotos .th{margin:0;width:54px;height:54px}.ofotos [aria-pressed=true]{outline:3px solid var(--accent);outline-offset:1px}.ofnone{font-size:13px;padding:6px 10px}.th.ro:not(.has){cursor:default}.th img{width:100%;height:100%;object-fit:cover;display:block}
 .th em{position:absolute;right:2px;bottom:2px;background:rgba(0,0,0,.7);color:#fff;font:600 10px/1 system-ui,sans-serif;padding:2px 4px;border-radius:6px;font-style:normal}
 .crow{grid-template-columns:auto auto minmax(0,1fr) auto!important}.crow .sub{grid-column:3/4!important}.crow .th{grid-row:1/3;margin:0 4px 0 0}
 .gal h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px}.gthumbs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
@@ -254,7 +256,7 @@ const DICT={
 "Falta a quantidade a encomendar em algum artigo.":"An item is missing the quantity to order.","Encomenda exportada":"Order exported","Encomenda":"Order",
 "Guardada no arquivo, na pasta “Encomendas exportadas” do Drive.":"Saved to the archive, in the “Encomendas exportadas” folder on Drive.","Imagem da encomenda":"Order image",
 "No telemóvel, mantém o dedo na imagem para a guardar ou partilhar.":"On a phone, press and hold the image to save or share it.","Partilhar":"Share","Descarregar":"Download","Abrir no Drive":"Open in Drive","Esvaziar a lista":"Empty the list",
-"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Abrir a pasta das fotografias":"Open the photos folder","A procurar a pasta…":"Looking for the folder…","As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.":"Reagent and consumable photos are kept in Drive, in the Lab Stock › Photos folder.","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
+"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Fotografia na encomenda":"Photo in the order","Usar esta fotografia":"Use this photo","Abrir a pasta das fotografias":"Open the photos folder","A procurar a pasta…":"Looking for the folder…","As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.":"Reagent and consumable photos are kept in Drive, in the Lab Stock › Photos folder.","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
 "A abrir o arquivo":"Opening the archive","A ler a pasta de encomendas no Drive…":"Reading the orders folder on Drive…","Não foi possível abrir o arquivo":"Could not open the archive",
 "Encomendas exportadas, da mais recente para a mais antiga.":"Exported orders, newest first.","Abrir a pasta no Drive":"Open the folder in Drive","Ver":"View","Apagar":"Delete",
 "Ainda não há exportações":"No exports yet","Quando exportares uma encomenda, a imagem fica guardada aqui.":"When you export an order, the image is saved here.",
@@ -624,8 +626,8 @@ const inCart=(k,id)=>CART.some(x=>cartKey(x.k,x.id)===cartKey(k,id));
 function updateBadge(){const n=CART.length;const b=$("#cartN");if(b){b.textContent=n;b.hidden=!n}
   const bar=$("#cartBar");if(bar){bar.hidden=!n||!["reag","cons"].includes(MODE);$("#cartBarTxt").textContent=n===1?"1 artigo na encomenda":`${n} artigos na encomenda`}}
 function toggleCart(k,id,on){if(on&&!inCart(k,id)){let o;
-    if(k==="r"){const it=items.find(i=>i.code===id);if(!it)return;o={k,id,name:it.name,det:[it.code,it.brand,it.ref,it.qty].filter(Boolean).join(" · "),qty:"1"}}
-    else{const c=cons.find(i=>i.id===id);if(!c)return;o={k,id,name:c.name,det:[c.type,c.size].filter(Boolean).join(" · "),qty:"1"}}
+    if(k==="r"){const it=items.find(i=>i.code===id);if(!it)return;o={k,id,name:it.name,det:[it.code,it.brand,it.ref,it.qty].filter(Boolean).join(" · "),qty:"1",foto:fotos(it.photo)[0]||""}}
+    else{const c=cons.find(i=>i.id===id);if(!c)return;o={k,id,name:c.name,det:[c.type,c.size].filter(Boolean).join(" · "),qty:"1",foto:fotos(c.photo)[0]||""}}
     CART.push(o)}
   if(!on)CART=CART.filter(x=>cartKey(x.k,x.id)!==cartKey(k,id));saveCart()}
 document.addEventListener("change",e=>{const t=e.target;if(t&&t.matches&&t.matches("input[data-pick]")){const[k,id]=t.dataset.pick.split("|");toggleCart(k,id,t.checked);
@@ -740,7 +742,7 @@ function renderOrder(){const v=$("#view");
   const sec=(k,t)=>{const L=grp(k);if(!L.length)return"";return `<h3 class="sech">${t} <span>${L.length}</span></h3><div class="list">${L.map(x=>`<div class="orow" data-key="${esc(cartKey(x.k,x.id))}">
     <div class="oname"><b>${esc(x.name)}</b><span>${esc(x.det||"")}</span></div>
     <label class="oqty"><span>Quantidade a encomendar</span><input data-q value="${esc(x.qty)}" placeholder="ex. 2 caixas"></label>
-    <button class="icon del" data-del title="Tirar da lista" aria-label="Tirar da lista">${IC.trash}</button></div>`).join("")}</div>`};
+    <button class="icon del" data-del title="Tirar da lista" aria-label="Tirar da lista">${IC.trash}</button>${ofotoHTML(x)}</div>`).join("")}</div>`};
   let req="";try{req=localStorage.getItem("btx-req")||""}catch(e){}
   v.innerHTML=`<h2 class="ptitle">Encomendas a fazer</h2><p class="pintro">Escreve quanto queres encomendar de cada artigo. O stock actual não aparece na imagem.</p>
   ${sec("r","Reagentes")}${sec("c","Consumíveis")}
@@ -749,10 +751,15 @@ function renderOrder(){const v=$("#view");
   <div class="actions"><button id="oClear">Limpar lista</button><button class="primary" id="oExp">Exportar imagem</button></div>`;
   v.querySelectorAll(".orow").forEach(r=>{const key=r.dataset.key;
     r.querySelector("[data-q]").oninput=e=>{const x=CART.find(c=>cartKey(c.k,c.id)===key);if(x){x.qty=e.target.value;saveCart()}};
-    r.querySelector("[data-del]").onclick=()=>{CART=CART.filter(c=>cartKey(c.k,c.id)!==key);saveCart();v.dataset.v="";renderOrder()}});
+    r.querySelector("[data-del]").onclick=()=>{CART=CART.filter(c=>cartKey(c.k,c.id)!==key);saveCart();v.dataset.v="";renderOrder()};
+    r.querySelectorAll("[data-of]").forEach(b=>b.onclick=()=>{const x=CART.find(c=>cartKey(c.k,c.id)===key);if(!x)return;x.foto=b.dataset.of;saveCart();
+      r.querySelectorAll("[data-of]").forEach(o=>o.setAttribute("aria-pressed",String(o.dataset.of===x.foto)))})});
   $("#oTo").oninput=e=>{try{localStorage.setItem("btx-req",e.target.value)}catch(err){}};
   const clr=$("#oClear");clr.onclick=()=>{if(clr.dataset.ok){CART=[];saveCart();v.dataset.v="";renderOrder();return}clr.dataset.ok="1";clr.textContent="Confirmar limpar";setTimeout(()=>{if(clr.isConnected){delete clr.dataset.ok;clr.textContent=tr("Limpar lista")}},4000)};
   $("#oExp").onclick=exportOrder}
+function ofotoHTML(x){const it=itemDe(x.k,x.id);const l=fotos(it&&it.photo);if(!l.length)return"";if(x.foto&&!l.includes(x.foto))x.foto=l[0];if(x.foto===undefined)x.foto=l[0];
+  return `<div class="ofotos"><span>Fotografia na encomenda</span><div>${l.map(f=>`<button type="button" class="th has" data-of="${esc(f)}" aria-pressed="${f===x.foto}" title="Usar esta fotografia" aria-label="Usar esta fotografia">${imgFoto(f,160)}</button>`).join("")}<button type="button" class="ofnone" data-of="" aria-pressed="${!x.foto}">Sem fotografia</button></div></div>`}
+function imgParaCanvas(id){return fotoBlobUrl(id,800).then(u=>new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=u})).catch(()=>null)}
 function wrapText(ctx,t,w){const words=String(t).split(/\s+/);const lines=[];let cur="";words.forEach(wd=>{const test=cur?cur+" "+wd:wd;if(ctx.measureText(test).width>w&&cur){lines.push(cur);cur=wd}else cur=test});if(cur)lines.push(cur);return lines.length?lines:[""]}
 function rrect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
 async function orderImage(by,to,notes){const EN=LANG==="en";const L=EN?{t:"Order request",items:"items",item:"item",by:"Requested by",to:"For",r:"Reagents",c:"Consumables",qty:"Quantity",it:"Item",notes:"Notes",foot:"Generated with the Stocks BIOTOX app"}:{t:"Pedido de encomenda",items:"artigos",item:"artigo",by:"Pedido por",to:"Para",r:"Reagentes",c:"Consumíveis",qty:"Quantidade",it:"Artigo",notes:"Notas",foot:"Gerado na app Stocks BIOTOX"};
@@ -760,8 +767,11 @@ async function orderImage(by,to,notes){const EN=LANG==="en";const L=EN?{t:"Order
   const logo=await new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);const s=document.querySelector(".logo img");im.src=s?s.src:""});
   const cv=document.createElement("canvas");const ctx=cv.getContext("2d");
   const rows=[];["r","c"].forEach(k=>{const G=CART.filter(x=>x.k===k);if(G.length){rows.push({sec:k==="r"?L.r:L.c});G.forEach(x=>rows.push(x))}});
-  ctx.font=`600 26px ${F}`;const nameW=W-2*P-QW-70;
-  const lay=rows.map(r=>{if(r.sec)return{h:64,r};ctx.font=`600 26px ${F}`;const nl=wrapText(ctx,r.name,nameW);ctx.font=`400 20px ${F}`;const dl=r.det?wrapText(ctx,r.det,nameW):[];return{h:28+nl.length*34+dl.length*28+18,r,nl,dl}});
+  ctx.font=`600 26px ${F}`;const PW=240;
+  const imgs=await Promise.all(rows.map(r=>!r.sec&&r.foto?imgParaCanvas(r.foto):null));
+  const lay=rows.map((r,i)=>{if(r.sec)return{h:64,r};const im=imgs[i];let ph=0,pw=0;if(im){const s=Math.min(PW/im.width,300/im.height);pw=Math.round(im.width*s);ph=Math.round(im.height*s)}
+    const nameW=W-2*P-QW-70-(im?pw+24:0);ctx.font=`600 26px ${F}`;const nl=wrapText(ctx,r.name,nameW);ctx.font=`400 20px ${F}`;const dl=r.det?wrapText(ctx,r.det,nameW):[];
+    return{h:Math.max(28+nl.length*34+dl.length*28+18,im?ph+32:0),r,nl,dl,im,ph,pw}});
   ctx.font=`400 22px ${F}`;const notesL=notes?wrapText(ctx,notes,W-2*P-40):[];
   const H=230+80+lay.reduce((a,b)=>a+b.h,0)+(notesL.length?notesL.length*32+90:0)+110;
   cv.width=W;cv.height=H;
@@ -779,8 +789,10 @@ async function orderImage(by,to,notes){const EN=LANG==="en";const L=EN?{t:"Order
   y+=36;ctx.strokeStyle="#0d5c6e";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(P,y);ctx.lineTo(W-P,y);ctx.stroke();y+=4;
   let n=0;lay.forEach(o=>{if(o.r.sec){ctx.fillStyle="#0d5c6e";ctx.font=`700 22px ${F}`;ctx.fillText(o.r.sec.toUpperCase(),P+20,y+44);y+=o.h;n=0;return}
     if(n++%2===0){ctx.fillStyle="#eef5f7";ctx.fillRect(P,y,W-2*P,o.h)}
-    let yy=y+44;ctx.fillStyle="#15212b";ctx.font=`600 26px ${F}`;o.nl.forEach(l=>{ctx.fillText(l,P+20,yy);yy+=34});
-    ctx.fillStyle="#5b6b78";ctx.font=`400 20px ${F}`;o.dl.forEach(l=>{ctx.fillText(l,P+20,yy-6);yy+=28});
+    let tx=P+20;if(o.im){const pw=o.pw;ctx.save();rrect(ctx,P+20,y+16,pw,o.ph,10);ctx.clip();ctx.drawImage(o.im,P+20,y+16,pw,o.ph);ctx.restore();
+      ctx.strokeStyle="#d9e0e5";ctx.lineWidth=1;rrect(ctx,P+20,y+16,pw,o.ph,10);ctx.stroke();tx=P+20+pw+24}
+    let yy=y+44;ctx.fillStyle="#15212b";ctx.font=`600 26px ${F}`;o.nl.forEach(l=>{ctx.fillText(l,tx,yy);yy+=34});
+    ctx.fillStyle="#5b6b78";ctx.font=`400 20px ${F}`;o.dl.forEach(l=>{ctx.fillText(l,tx,yy-6);yy+=28});
     const q=String(o.r.qty||"").trim()||"—";ctx.font=`700 26px ${F}`;const qw=Math.min(QW,ctx.measureText(q).width+36);
     ctx.fillStyle="#0d5c6e";rrect(ctx,W-P-20-qw,y+16,qw,46,23);ctx.fill();ctx.fillStyle="#ffffff";ctx.textAlign="center";ctx.fillText(q.length>16?q.slice(0,15)+"…":q,W-P-20-qw/2,y+48);ctx.textAlign="left";
     y+=o.h;ctx.strokeStyle="#d9e0e5";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(P,y);ctx.lineTo(W-P,y);ctx.stroke()});
