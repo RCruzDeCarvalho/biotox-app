@@ -487,7 +487,7 @@ async function renderOneHist(code){
 }
 function call(fn,...args){return new Promise((res,rej)=>google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...args))}
 function errMsg(e){const m=String(e&&e.message||e);if(m.includes("CODIGO_ERRADO")){logout();return "O código do laboratório mudou. Entra outra vez."}if(m.includes("SO_CONSULTA"))return "Entraste só para consulta, não podes mudar nada.";return "Não foi possível guardar. "+m.replace(/^Error:\s*/,"")}
-function applyData(d){cons=d.cons||[];if(d.defs)DEFS=d.defs;fillShelves();if(d.papel){PAPEL=d.papel;$("#btnNew").hidden=PAPEL!=="editar"||MODE!=="reag";$("#cNew").hidden=PAPEL!=="editar"||MODE!=="cons";$("#modo").hidden=PAPEL!=="consulta";$("#navSet").hidden=PAPEL!=="editar"}items=d.items.sort((a,b)=>a.code.localeCompare(b.code));hist=d.hist||[];render();if(openCode)renderOneHist(openCode);if(PAPEL==="editar")setTimeout(importarFotos,1200)}
+function applyData(d){cons=d.cons||[];if(d.defs)DEFS=d.defs;fillShelves();if(d.papel){PAPEL=d.papel;$("#btnNew").hidden=PAPEL!=="editar"||MODE!=="reag";$("#cNew").hidden=PAPEL!=="editar"||MODE!=="cons";$("#modo").hidden=PAPEL!=="consulta";$("#navSet").hidden=PAPEL!=="editar"}items=d.items.sort((a,b)=>a.code.localeCompare(b.code));hist=d.hist||[];render();if(openCode)renderOneHist(openCode);if(PAPEL==="editar")setTimeout(importarFotos,1200);setTimeout(preCarregar,2500)}
 async function save(it,patch,txt){
   try{const d=await call("saveItem",PIN,it.code,patch,txt,me);applyData(d);toast("Guardado.");closeSheet()}
   catch(e){toast(errMsg(e))}
@@ -643,7 +643,26 @@ const fUrl=(id,s)=>`https:\/\/lh3.googleusercontent.com/d/${encodeURIComponent(i
 const fAlt=(id,s)=>`https:\/\/drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=s${s}`;
 const itemDe=(k,id)=>k==="r"?items.find(i=>i.code===id):cons.find(c=>c.id===id);
 function fotoErro(img){if(img.dataset.alt){img.src=img.dataset.alt;img.dataset.alt=""}}
-const imgFoto=(id,s)=>`<img loading="lazy" alt="" src="${fUrl(id,s)}" data-alt="${fAlt(id,s)}" onerror="fotoErro(this)">`;
+/* Cache das fotografias no próprio aparelho: cada ID do Drive nunca muda de conteúdo, por isso guarda-se para sempre */
+const FURL=new Map(),FMEM=new Map();let FCACHE=null;
+function fcache(){if(!FCACHE)FCACHE=(window.caches?caches.open("btx-fotos-v1"):Promise.resolve(null)).catch(()=>null);return FCACHE}
+function fotoBlobUrl(id,s){const k=id+"="+s;if(FMEM.has(k))return FMEM.get(k);
+  const pr=(async()=>{const url=fUrl(id,s);const c=await fcache();let r=null;try{r=c?await c.match(url):null}catch(e){}
+    if(!r){r=await fetch(url,{mode:"cors",credentials:"omit"});if(!r.ok)throw new Error(r.status);if(c){try{await c.put(url,r.clone())}catch(e){}}}
+    const u=URL.createObjectURL(await r.blob());FURL.set(k,u);return u})();
+  FMEM.set(k,pr);pr.catch(()=>FMEM.delete(k));return pr}
+const imgFoto=(id,s)=>{const u=FURL.get(id+"="+s);return u?`<img alt="" src="${u}">`:`<img alt="" data-fid="${esc(id)}" data-s="${s}">`};
+let FOBS=null;
+function hidratar(){const l=document.querySelectorAll("img[data-fid]:not([data-h])");if(!l.length)return;
+  if(!FOBS)FOBS=window.IntersectionObserver?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){FOBS.unobserve(e.target);carregarImg(e.target)}}),{rootMargin:"400px"}):null;
+  l.forEach(img=>{img.dataset.h="1";if(FOBS)FOBS.observe(img);else carregarImg(img)})}
+function carregarImg(img){const id=img.dataset.fid,s=+img.dataset.s;fotoBlobUrl(id,s).then(u=>{img.src=u}).catch(()=>{img.src=fAlt(id,s)})}
+let FHQ=0;new MutationObserver(()=>{if(!FHQ)FHQ=requestAnimationFrame(()=>{FHQ=0;hidratar()})}).observe(document.body,{childList:true,subtree:true});
+/* Depois de entrar, guarda em segundo plano as miniaturas que ainda não estão no aparelho */
+let FPRE=false;
+async function preCarregar(){if(FPRE)return;FPRE=true;const ids=[...new Set(items.concat(cons).flatMap(i=>fotos(i.photo).slice(0,1)))];
+  const q=ids.filter(id=>!FURL.has(id+"=160"));const w=async()=>{while(q.length){const id=q.shift();try{await fotoBlobUrl(id,160)}catch(e){}}};
+  await Promise.all([w(),w(),w()])}
 function thumbHTML(k,id,photo){const l=fotos(photo);const ed=PAPEL==="editar";
   if(!l.length)return `<button type="button" class="th${ed?"":" ro"}" data-ph="${k}|${esc(id)}" title="${ed?"Adicionar fotografia":"Sem fotografia"}" aria-label="${ed?"Adicionar fotografia":"Sem fotografia"}"></button>`;
   return `<button type="button" class="th has" data-ph="${k}|${esc(id)}" title="Ver fotografia" aria-label="Ver fotografia">${imgFoto(l[0],160)}${l.length>1?`<em>${l.length}</em>`:""}</button>`}
@@ -668,7 +687,7 @@ function verFotos(l,i,titulo){let lb=$("#lb");if(!lb){lb=document.createElement(
   LB={l,i,t:titulo};pintarLb();lb.hidden=false}
 function pintarLb(){const lb=$("#lb");const{l,i,t}=LB;
   lb.innerHTML=`<div class="lbtop"><span>${esc(t)}${l.length>1?` · ${i+1}/${l.length}`:""}</span><button type="button" data-lb="x">Fechar</button></div>
-  <img alt="" src="${fUrl(l[i],1600)}" data-alt="${fAlt(l[i],1600)}" onerror="fotoErro(this)">
+  ${imgFoto(l[i],1600)}
   ${l.length>1?`<button type="button" class="lbn p" data-lb="p" aria-label="Anterior">‹</button><button type="button" class="lbn n" data-lb="n" aria-label="Seguinte">›</button>`:""}
   <a class="lbdrive" href="https:\/\/drive.google.com/file/d/${encodeURIComponent(l[i])}/view" target="_blank" rel="noopener">Abrir no Drive</a>`}
 function lbPasso(d){if(LB.l.length<2)return;LB.i=(LB.i+d+LB.l.length)%LB.l.length;pintarLb()}
