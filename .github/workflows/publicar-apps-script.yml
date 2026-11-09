@@ -1,0 +1,85 @@
+name: Publicar no Apps Script
+
+# Corre sempre que algo muda na pasta gas/ (ou à mão, no separador Actions)
+on:
+  push:
+    branches: [main]
+    paths: ['gas/**', '.github/workflows/publicar-apps-script.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: apps-script
+  cancel-in-progress: false
+
+env:
+  # Implantação usada pela app e pela página do GitHub (o URL /exec)
+  DEPLOYMENT_ID: AKfycbx9HH_lKO63o3ymynADu616Wb6Ne__e4XcXsqm1nuGLXzD2t1ljFjdROBXNz23WC7m_8A
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verificar se já está configurado
+        id: chk
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+        run: |
+          if grep -q COLA_AQUI gas/.clasp.json || [ -z "$CLASPRC_JSON" ]; then
+            echo "Publicação automática ainda não configurada (falta o ID do script ou o secret CLASPRC_JSON). Nada a fazer."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.chk.outputs.ready == 'true'
+        with:
+          node-version: '20'
+
+      - name: Instalar clasp
+        if: steps.chk.outputs.ready == 'true'
+        run: npm install -g @google/clasp@2.4.2
+
+      - name: Credenciais do Google
+        if: steps.chk.outputs.ready == 'true'
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+        run: |
+          if [ -z "$CLASPRC_JSON" ]; then echo "Falta o secret CLASPRC_JSON"; exit 1; fi
+          printf '%s' "$CLASPRC_JSON" > ~/.clasprc.json
+
+      - name: Pôr os códigos de acesso no Code.gs
+        if: steps.chk.outputs.ready == 'true'
+        env:
+          CODIGO_LAB: ${{ secrets.CODIGO_LAB }}
+          CODIGO_CONSULTA: ${{ secrets.CODIGO_CONSULTA }}
+        run: |
+          python3 - <<'PY'
+          import os, sys
+          lab, con = os.environ.get('CODIGO_LAB', ''), os.environ.get('CODIGO_CONSULTA', '')
+          if not lab or not con:
+              sys.exit('Faltam os secrets CODIGO_LAB e/ou CODIGO_CONSULTA')
+          esc = lambda s: s.replace('\\', '\\\\').replace("'", "\\'")
+          p = 'gas/Code.gs'
+          t = open(p, encoding='utf-8').read()
+          t = t.replace('__CODIGO_LAB__', esc(lab)).replace('__CODIGO_CONSULTA__', esc(con))
+          open(p, 'w', encoding='utf-8').write(t)
+          PY
+
+      - name: Enviar o código
+        if: steps.chk.outputs.ready == 'true'
+        working-directory: gas
+        run: clasp push --force
+
+      - name: Nova versão na implantação da app
+        if: steps.chk.outputs.ready == 'true'
+        working-directory: gas
+        run: |
+          MSG="GitHub ${GITHUB_SHA::7} $(date -u +'%Y-%m-%d %H:%M')"
+          OUT=$(clasp version "$MSG")
+          echo "$OUT"
+          V=$(echo "$OUT" | grep -o '[0-9]\+' | tail -1)
+          clasp deploy --deploymentId "$DEPLOYMENT_ID" --versionNumber "$V" --description "$MSG"
+          echo "Publicada a versão $V na implantação da app."
