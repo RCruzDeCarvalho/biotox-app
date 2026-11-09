@@ -1,5 +1,6 @@
 name: Publicar no Apps Script
-# Publica a app web (Apps Script) e gera o APK Android com o mesmo número de versão: 1.<n.º da publicação>
+# Publica a app web (Apps Script) e gera o APK Android com o mesmo número de versão.
+# Numeração: 1.4 … 1.9, depois 2.0 … 2.9, 3.0 … (cada publicação sobe uma casa)
 
 # Corre sempre que algo muda na pasta gas/ (ou à mão, no separador Actions)
 on:
@@ -15,7 +16,6 @@ concurrency:
 env:
   # Implantação usada pela app e pela página do GitHub (o URL /exec)
   DEPLOYMENT_ID: AKfycbx9HH_lKO63o3ymynADu616Wb6Ne__e4XcXsqm1nuGLXzD2t1ljFjdROBXNz23WC7m_8A
-  VERSAO: 1.${{ github.run_number }}
   VERSAO_CODIGO: ${{ github.run_number }}
 
 jobs:
@@ -23,6 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Número da versão
+        run: |
+          K=$(( ${{ github.run_number }} + 10 ))
+          echo "VERSAO=$(( K / 10 )).$(( K % 10 ))" >> "$GITHUB_ENV"
 
       - name: Verificar se já está configurado
         id: chk
@@ -96,6 +101,11 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Número da versão
+        run: |
+          K=$(( ${{ github.run_number }} + 10 ))
+          echo "VERSAO=$(( K / 10 )).$(( K % 10 ))" >> "$GITHUB_ENV"
 
       - uses: actions/setup-java@v4
         with:
