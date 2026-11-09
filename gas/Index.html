@@ -125,6 +125,19 @@ a.ext:hover{background:var(--accent-soft)}
 .nav button[aria-pressed="true"]{background:var(--accent-soft);color:var(--ink)}
 .badge{background:var(--warn);color:#fff;font-size:11px;min-width:18px;height:18px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px;font-family:var(--f-mono)}
 @media (max-width:640px){.nav button span{display:none}.nav button{padding:8px 11px}.nav{justify-content:space-between}}
+.ftog{display:none;align-items:center;gap:6px;white-space:nowrap}.ftog b{background:var(--accent);color:var(--accent-ink);border-radius:999px;font-size:12px;min-width:20px;padding:1px 6px;text-align:center}
+.ftog[aria-expanded="true"]{background:var(--accent-soft)}
+@media (max-width:640px){
+  header .wrap{padding-block:8px;gap:6px}
+  .hlogo{height:28px}.langs{gap:4px;align-self:center}.langs button{padding:2px}.langs svg{width:24px;height:16px}#btnOut{padding:5px 10px;font-size:14px}
+  .nav button{padding:6px 10px}
+  .bar2{min-height:0;flex-wrap:nowrap;gap:8px}.bar2 .stat{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+  .bar2 .spacer{display:none}.bar2 a.ext,.bar2 button{padding:5px 9px;font-size:13px;white-space:nowrap;flex:none}
+  #rowQ{flex-wrap:nowrap;gap:8px}#q,#cq{flex:1 1 auto;padding:7px 10px;width:100%}#rowQ .ftog{display:inline-flex;padding:7px 10px}
+  #rowF:not(.open)>:not(.tabs){display:none}
+  .filters{gap:6px}.tabs button{padding:5px 9px;font-size:14px}label.chk{font-size:13px}
+  #consBar{display:flex;flex-direction:column;gap:6px}#consBar[hidden]{display:none}
+}
 .ver{margin:22px 4px 4px;color:var(--muted);font-size:13px;text-align:center}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 .tile{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:18px;border-radius:12px;background:var(--surface);border:1px solid var(--line);text-align:left}
@@ -191,6 +204,7 @@ body{margin:0}
     </div>
     <div class="top" id="rowQ">
       <input id="q" type="search" placeholder="Procurar por nome, código BTX, CAS ou código antigo" autocomplete="off">
+      <button type="button" class="ftog" id="fTog" aria-expanded="false" aria-controls="rowF">Filtros<b id="fN" hidden></b></button>
     </div>
     <div class="filters" id="rowF">
       <div class="tabs" role="group" aria-label="Vista">
@@ -256,7 +270,7 @@ const DICT={
 "Falta a quantidade a encomendar em algum artigo.":"An item is missing the quantity to order.","Encomenda exportada":"Order exported","Encomenda":"Order",
 "Guardada no arquivo, na pasta “Encomendas exportadas” do Drive.":"Saved to the archive, in the “Encomendas exportadas” folder on Drive.","Imagem da encomenda":"Order image",
 "No telemóvel, mantém o dedo na imagem para a guardar ou partilhar.":"On a phone, press and hold the image to save or share it.","Partilhar":"Share","Descarregar":"Download","Abrir no Drive":"Open in Drive","Esvaziar a lista":"Empty the list",
-"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Fotografia na encomenda":"Photo in the order","Usar esta fotografia":"Use this photo","Abrir a pasta das fotografias":"Open the photos folder","A procurar a pasta…":"Looking for the folder…","As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.":"Reagent and consumable photos are kept in Drive, in the Lab Stock › Photos folder.","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
+"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Filtros":"Filters","Fotografia na encomenda":"Photo in the order","Usar esta fotografia":"Use this photo","Abrir a pasta das fotografias":"Open the photos folder","A procurar a pasta…":"Looking for the folder…","As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.":"Reagent and consumable photos are kept in Drive, in the Lab Stock › Photos folder.","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
 "A abrir o arquivo":"Opening the archive","A ler a pasta de encomendas no Drive…":"Reading the orders folder on Drive…","Não foi possível abrir o arquivo":"Could not open the archive",
 "Encomendas exportadas, da mais recente para a mais antiga.":"Exported orders, newest first.","Abrir a pasta no Drive":"Open the folder in Drive","Ver":"View","Apagar":"Delete",
 "Ainda não há exportações":"No exports yet","Quando exportares uma encomenda, a imagem fica guardada aqui.":"When you export an order, the image is saved here.",
@@ -364,7 +378,10 @@ const hzVar=h=>`var(${HZ[h]||"--hz-irr"})`;
 const locTxt=it=>`${it.cab}${it.shelf&&it.shelf!=="—"?" · "+it.shelf:""}`;
 function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
 
-function filtered(){
+function nFiltros(){let n=0;if($("#fGroup").value)n++;if($("#fCab").value)n++;if($("#fStatus").value!=="activos")n++;["#fAlert","#fMove","#fSds"].forEach(s=>{if($(s).checked)n++});
+  const b=$("#fN");if(b){b.hidden=!n;b.textContent=n}}
+$("#fTog").onclick=()=>{const f=$("#rowF"),o=!f.classList.contains("open");f.classList.toggle("open",o);$("#fTog").setAttribute("aria-expanded",String(o))};
+function filtered(){nFiltros();
   const q=norm($("#q").value.trim()),g=$("#fGroup").value,c=$("#fCab").value,st=$("#fStatus").value,al=$("#fAlert").checked,mv=$("#fMove").checked;
   return items.filter(it=>{
     if(g&&it.group!==g)return false;
