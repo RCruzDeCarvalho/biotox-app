@@ -1,3 +1,4 @@
+// Stocks BIOTOX — publicado automaticamente via GitHub Actions
 /**
  * Stocks BIOTOX — reagentes e consumíveis, app web sobre Google Sheets
  * Colar este ficheiro em Code.gs no Apps Script da folha "Reagentes BIOTOX - base de dados".
