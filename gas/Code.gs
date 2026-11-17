@@ -703,3 +703,22 @@ function fdsConteudo(pin, ids) {
     return ok ? { id, b64: Utilities.base64Encode(f.getBlob().getBytes()) } : { id, b64: '' };
   });
 }
+
+/* Manda para o lixo do Drive (recuperável 30 dias) FDS da pasta que não estão ligadas a nenhum frasco. Só editores. */
+function fdsApagar(pin, ids, quem) {
+  verificar_(pin);
+  const pasta = pastaFdsId_();
+  const { r, h } = folhas_();
+  const head = r.getRange(1, 1, 1, r.getLastColumn()).getValues()[0].map(String);
+  const cS = head.indexOf(COLS.find(c => c[0] === 'sds')[1]) + 1;
+  const ligados = r.getLastRow() > 1 ? r.getRange(2, cS, r.getLastRow() - 1, 1).getValues().map(v => String(v[0])).join(' ') : '';
+  const apagados = [];
+  (ids || []).forEach(id => {
+    const f = DriveApp.getFileById(id);
+    let ok = false; const ps = f.getParents(); while (ps.hasNext()) if (ps.next().getId() === pasta) ok = true;
+    if (!ok || ligados.indexOf(id) >= 0) return;
+    f.setTrashed(true); apagados.push(f.getName());
+  });
+  if (apagados.length) registar_(h, '—', 'FDS sem frasco apagadas da pasta: ' + apagados.length, quem);
+  return { apagados };
+}
