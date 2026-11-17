@@ -640,3 +640,55 @@ function substituirFoto(pin, kind, id, antigo, base64, quem) {
   } catch (e) { }
   return { id, photo: ids.join(',') };
 }
+
+
+/* ================= FICHAS DE DADOS DE SEGURANÇA ================= */
+function pastaFdsId_() { return PASTA_FDS.match(/folders\/([\w-]+)/)[1]; }
+
+/* Lista os ficheiros da pasta das FDS (para associar). Só editores. */
+function fdsListar(pin) {
+  verificar_(pin);
+  const it = DriveApp.getFolderById(pastaFdsId_()).getFiles(), out = [];
+  while (it.hasNext()) {
+    const f = it.next();
+    if (f.isTrashed()) continue;
+    out.push({ id: f.getId(), nome: f.getName(), tipo: f.getMimeType(), url: f.getUrl() });
+  }
+  return out;
+}
+
+/* Renomeia FDS e liga-as aos frascos. lista = [{fileId, codes:[...], nome}]. Só editores.
+   As FDS ficam visíveis para quem tiver o link (são documentos públicos dos fornecedores),
+   para qualquer pessoa do laboratório as abrir a partir da app. */
+function fdsAplicar(pin, lista, quem) {
+  verificar_(pin);
+  const pasta = pastaFdsId_();
+  const lock = LockService.getScriptLock(); lock.waitLock(30000);
+  const feitos = [];
+  try {
+    const { r, h } = folhas_();
+    const head = r.getRange(1, 1, 1, r.getLastColumn()).getValues()[0].map(String);
+    const col = k => head.indexOf(COLS.find(c => c[0] === k)[1]) + 1;
+    const cS = col('sds'), cA = col('updatedAt'), cB = col('updatedBy');
+    const agora = Utilities.formatDate(new Date(), 'Europe/Lisbon', 'dd/MM/yyyy HH:mm');
+    (lista || []).forEach(o => {
+      const f = DriveApp.getFileById(o.fileId);
+      let naPasta = false; const ps = f.getParents(); while (ps.hasNext()) if (ps.next().getId() === pasta) naPasta = true;
+      if (!naPasta) throw new Error('O ficheiro ' + f.getName() + ' não está na pasta das FDS.');
+      const nome = String(o.nome || '').replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim();
+      if (nome) f.setName(nome);
+      LINK_PUBLICO_(f);
+      const url = f.getUrl();
+      (o.codes || []).forEach(code => {
+        const row = linhaDe_(r, code);
+        if (row < 0) return;
+        r.getRange(row, cS).setNumberFormat('@').setValue(url);
+        if (cA > 0) r.getRange(row, cA).setNumberFormat('@').setValue(agora);
+        if (cB > 0) r.getRange(row, cB).setNumberFormat('@').setValue(quem || '');
+        registar_(h, code, 'FDS associada: ' + (nome || f.getName()), quem);
+        feitos.push(code);
+      });
+    });
+  } finally { lock.releaseLock(); }
+  return { feitos };
+}
