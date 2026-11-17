@@ -163,6 +163,7 @@ a.ext:hover{background:var(--accent-soft)}
 .crow{grid-template-columns:auto auto minmax(0,1fr) auto!important}.crow .sub{grid-column:3/4!important}.crow .th{grid-row:1/3;margin:0 4px 0 0}
 .gal h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px}.gthumbs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
 .gt{position:relative}.gt .th{width:84px;height:84px;margin:0}.gx{position:absolute;top:-8px;right:-8px;min-width:26px;height:26px;padding:0 7px;border-radius:13px;font-size:15px;line-height:1;background:var(--ink);color:var(--bg);border:none}
+.gt{display:flex;flex-direction:column;align-items:center;gap:4px}.gcrop{font-size:12px;padding:3px 8px;min-height:0}
 .gx.sure{background:var(--hz-inf);color:#fff;font-size:12px}.gnone{color:var(--muted);font-size:14px}.gal .links{display:flex;gap:8px;flex-wrap:wrap}
 .ovl{position:fixed;inset:0;z-index:25;background:rgba(5,10,14,.94);display:flex;align-items:center;justify-content:center}.ovl[hidden]{display:none}
 #lb img{max-width:100%;max-height:calc(100% - 120px);object-fit:contain;border-radius:6px;background:#fff}
@@ -278,7 +279,7 @@ const DICT={
 "Falta a quantidade a encomendar em algum artigo.":"An item is missing the quantity to order.","Encomenda exportada":"Order exported","Encomenda":"Order",
 "Guardada no arquivo, na pasta “Encomendas exportadas” do Drive.":"Saved to the archive, in the “Encomendas exportadas” folder on Drive.","Imagem da encomenda":"Order image",
 "No telemóvel, mantém o dedo na imagem para a guardar ou partilhar.":"On a phone, press and hold the image to save or share it.","Partilhar":"Share","Descarregar":"Download","Abrir no Drive":"Open in Drive","Esvaziar a lista":"Empty the list",
-"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Guardada no arquivo, na pasta “Encomendas exportadas” do Drive. A lista de encomendas foi esvaziada.":"Saved to the archive, in the “Encomendas exportadas” Drive folder. The order list has been emptied.","Este browser não deixa partilhar ficheiros. Descarrega a imagem e partilha-a a partir da galeria.":"This browser can’t share files. Download the image and share it from your gallery.","Não foi possível partilhar. Usa Descarregar.":"Could not share. Use Download instead.","Filtros":"Filters","Fotografia na encomenda":"Photo in the order","Usar esta fotografia":"Use this photo","Abrir a pasta das fotografias":"Open the photos folder","A procurar a pasta…":"Looking for the folder…","As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.":"Reagent and consumable photos are kept in Drive, in the Lab Stock › Photos folder.","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
+"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Recortar":"Crop","Guardar recorte":"Save crop","Fotografia recortada.":"Photo cropped.","A guardar o recorte…":"Saving the crop…","Escolhe uma parte da fotografia antes de guardar.":"Select part of the photo before saving.","Arrasta o rectângulo e os cantos até ficar só este produto. A fotografia passa a ser só a parte escolhida.":"Drag the rectangle and its corners until only this product is inside. The photo will become just the selected part.","Guardada no arquivo, na pasta “Encomendas exportadas” do Drive. A lista de encomendas foi esvaziada.":"Saved to the archive, in the “Encomendas exportadas” Drive folder. The order list has been emptied.","Este browser não deixa partilhar ficheiros. Descarrega a imagem e partilha-a a partir da galeria.":"This browser can’t share files. Download the image and share it from your gallery.","Não foi possível partilhar. Usa Descarregar.":"Could not share. Use Download instead.","Filtros":"Filters","Fotografia na encomenda":"Photo in the order","Usar esta fotografia":"Use this photo","Abrir a pasta das fotografias":"Open the photos folder","A procurar a pasta…":"Looking for the folder…","As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.":"Reagent and consumable photos are kept in Drive, in the Lab Stock › Photos folder.","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
 "A abrir o arquivo":"Opening the archive","A ler a pasta de encomendas no Drive…":"Reading the orders folder on Drive…","Não foi possível abrir o arquivo":"Could not open the archive",
 "Encomendas exportadas, da mais recente para a mais antiga.":"Exported orders, newest first.","Abrir a pasta no Drive":"Open the folder in Drive","Ver":"View","Apagar":"Delete",
 "Ainda não há exportações":"No exports yet","Quando exportares uma encomenda, a imagem fica guardada aqui.":"When you export an order, the image is saved here.",
@@ -697,12 +698,13 @@ document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest
   const[k,id]=b.dataset.ph.split("|");const it=itemDe(k,id);if(!it)return;const l=fotos(it.photo);
   if(l.length)verFotos(l,0,it.name||id);else if(PAPEL==="editar")menuFoto(k,id)},true);
 function galeriaHTML(k,id){const it=itemDe(k,id);const l=fotos(it&&it.photo);const ed=PAPEL==="editar";
-  return `<h3>Fotografias</h3><div class="gthumbs">${l.map((f,i)=>`<div class="gt"><button type="button" class="th has" data-gi="${i}" title="Ver fotografia" aria-label="Ver fotografia">${imgFoto(f,240)}</button>${ed?`<button type="button" class="gx" data-gx="${esc(f)}" title="Remover fotografia" aria-label="Remover fotografia">×</button>`:""}</div>`).join("")||`<span class="gnone">Ainda sem fotografias.</span>`}</div>
+  return `<h3>Fotografias</h3><div class="gthumbs">${l.map((f,i)=>`<div class="gt"><button type="button" class="th has" data-gi="${i}" title="Ver fotografia" aria-label="Ver fotografia">${imgFoto(f,240)}</button>${ed?`<button type="button" class="gx" data-gx="${esc(f)}" title="Remover fotografia" aria-label="Remover fotografia">×</button><button type="button" class="gcrop" data-gc="${esc(f)}">Recortar</button>`:""}</div>`).join("")||`<span class="gnone">Ainda sem fotografias.</span>`}</div>
   ${ed?`<div class="links"><button type="button" data-gadd="0">Escolher ficheiros</button><button type="button" data-gadd="1">Tirar fotografia</button></div>`:""}`}
 function ligarGaleria(){const g=$("#gal");if(!g)return;const k=g.dataset.k,id=g.dataset.id;g.innerHTML=galeriaHTML(k,id);
   g.onclick=async e=>{const t=e.target.closest("button");if(!t)return;const it=itemDe(k,id);if(!it)return;const l=fotos(it.photo);
     if(t.dataset.gi!==undefined)verFotos(l,+t.dataset.gi,it.name||id);
     else if(t.dataset.gadd!==undefined)escolherFotos(k,id,t.dataset.gadd==="1");
+    else if(t.dataset.gc)recortarFoto(k,id,t.dataset.gc);
     else if(t.dataset.gx){if(!t.classList.contains("sure")){t.classList.add("sure");t.textContent="Remover?";setTimeout(()=>{if(t.isConnected&&!t.disabled){t.classList.remove("sure");t.textContent="×"}},3500);return}
       t.disabled=true;try{const r=await call("removerFoto",PIN,k,id,t.dataset.gx,me);setFoto(k,r.id,r.photo);toast("Fotografia removida.")}catch(err){t.disabled=false;toast(errMsg(err))}}}}
 function setFoto(k,id,photo){const it=itemDe(k,id);if(it)it.photo=photo;const g=$("#gal");if(g&&g.dataset.k===k&&g.dataset.id===id)ligarGaleria();
@@ -791,14 +793,15 @@ async function desenharRecorte(cv,id,cr){const im=await imgParaCanvas(id);if(!im
   const sw=c.w*im.naturalWidth,sh=c.h*im.naturalHeight;const s=Math.min(cv.width/sw,cv.height/sh);const dw=sw*s,dh=sh*s;const ctx=cv.getContext("2d");
   ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(im,c.x*im.naturalWidth,c.y*im.naturalHeight,sw,sh,(cv.width-dw)/2,(cv.height-dh)/2,dw,dh)}
 /* Editor: escolher uma das fotografias do artigo e recortar a parte que interessa (ex. o rótulo com a referência) */
-function editarFotoEnc(key){const x=CART.find(c=>cartKey(c.k,c.id)===key);if(!x)return;const it=itemDe(x.k,x.id);const l=fotos(it&&it.photo);if(!l.length)return;
-  let sel=x.foto||l[0],cr=x.foto&&x.crop?Object.assign({},x.crop):{x:0,y:0,w:1,h:1};
+/* Editor de recorte genérico: escolher uma fotografia (se houver várias) e marcar o rectângulo */
+function editorRecorte(o){let sel=o.sel||o.l[0],cr=o.cr?Object.assign({},o.cr):{x:0,y:0,w:1,h:1};
   let ov=$("#crop");if(!ov){ov=document.createElement("div");ov.id="crop";ov.className="ovl";document.body.appendChild(ov)}
-  const pintar=()=>{ov.innerHTML=`<div class="cbox"><div class="ctop"><b>${esc(it.name||x.id)}</b><button type="button" data-c="x">Cancelar</button></div>
-    ${l.length>1?`<div class="cthumbs">${l.map(f=>`<button type="button" class="th has" data-c="f" data-f="${esc(f)}" aria-pressed="${f===sel}">${imgFoto(f,160)}</button>`).join("")}</div>`:""}
-    <p class="hint">Arrasta o rectângulo e os cantos para escolher a parte da fotografia que vai na encomenda.</p>
+  const fechar=()=>{ov.hidden=true;ov.innerHTML=""};
+  const pintar=()=>{ov.innerHTML=`<div class="cbox"><div class="ctop"><b>${esc(o.titulo||"")}</b><button type="button" data-c="x">Cancelar</button></div>
+    ${o.l.length>1?`<div class="cthumbs">${o.l.map(f=>`<button type="button" class="th has" data-c="f" data-f="${esc(f)}" aria-pressed="${f===sel}">${imgFoto(f,160)}</button>`).join("")}</div>`:""}
+    <p class="hint">${esc(o.dica||"Arrasta o rectângulo e os cantos para escolher a parte da fotografia que interessa.")}</p>
     <div class="cstage"><div class="cwrap"><img alt="" id="cImg"><div class="cr" id="cR"><i data-h="nw"></i><i data-h="ne"></i><i data-h="sw"></i><i data-h="se"></i></div></div></div>
-    <div class="actions"><button type="button" data-c="none">Sem fotografia</button><button type="button" data-c="all">Fotografia inteira</button><button type="button" class="primary" data-c="ok">Usar</button></div></div>`;
+    <div class="actions">${o.botoes.map(b=>`<button type="button" data-c="${b.c}"${b.p?' class="primary"':""}>${esc(b.t)}</button>`).join("")}</div></div>`;
     const img=$("#cImg"),box=$("#cR");box.hidden=true;
     fotoBlobUrl(sel,2400).then(u=>{img.src=u}).catch(()=>{img.src=fAlt(sel,2400)});
     img.onload=()=>{box.hidden=false;pos()};
@@ -811,13 +814,27 @@ function editarFotoEnc(key){const x=CART.find(c=>cartKey(c.k,c.id)===key);if(!x)
         if(drag.h.includes("n")){y=Math.min(Math.max(0,c0.y+dy),c0.y+c0.h-M);h=c0.y+c0.h-y}else h=Math.min(Math.max(M,c0.h+dy),1-c0.y)}
       cr={x,y,w,h};pos()};
     box.onpointerup=box.onpointercancel=()=>{drag=null}};
-  ov.onclick=e=>{const b=e.target.closest("[data-c]");if(!b)return;const a=b.dataset.c;
-    if(a==="x"){ov.hidden=true;ov.innerHTML="";return}
+  ov.onclick=async e=>{const b=e.target.closest("[data-c]");if(!b)return;const a=b.dataset.c;
+    if(a==="x"){fechar();return}
     if(a==="f"){sel=b.dataset.f;cr={x:0,y:0,w:1,h:1};pintar();return}
     if(a==="all"){cr={x:0,y:0,w:1,h:1};const bx=$("#cR");if(bx){bx.style.left="0";bx.style.top="0";bx.style.width="100%";bx.style.height="100%"}return}
-    if(a==="none"){x.foto="";x.crop=null}else if(a==="ok"){x.foto=sel;x.crop=(cr.w>.995&&cr.h>.995)?null:cr}
-    saveCart();ov.hidden=true;ov.innerHTML="";$("#view").dataset.v="";renderOrder()};
+    b.disabled=true;try{if(await o.acao(a,sel,(cr.w>.995&&cr.h>.995)?null:cr)!==false)fechar()}finally{if(b.isConnected)b.disabled=false}};
   pintar();ov.hidden=false}
+/* Encomenda: escolher e recortar a fotografia que vai na imagem (não altera a fotografia guardada) */
+function editarFotoEnc(key){const x=CART.find(c=>cartKey(c.k,c.id)===key);if(!x)return;const it=itemDe(x.k,x.id);const l=fotos(it&&it.photo);if(!l.length)return;
+  editorRecorte({titulo:it.name||x.id,l,sel:x.foto||l[0],cr:x.foto?x.crop:null,dica:"Arrasta o rectângulo e os cantos para escolher a parte da fotografia que vai na encomenda.",
+    botoes:[{c:"none",t:"Sem fotografia"},{c:"all",t:"Fotografia inteira"},{c:"ok",t:"Usar",p:1}],
+    acao:(a,sel,cr)=>{if(a==="none"){x.foto="";x.crop=null}else{x.foto=sel;x.crop=cr}saveCart();$("#view").dataset.v="";renderOrder()}})}
+/* Ficha do artigo: recortar a própria fotografia guardada (cria uma fotografia nova só com a parte escolhida) */
+function recortarFoto(k,id,fid){const it=itemDe(k,id);if(!it)return;
+  editorRecorte({titulo:it.name||id,l:[fid],sel:fid,dica:"Arrasta o rectângulo e os cantos até ficar só este produto. A fotografia passa a ser só a parte escolhida.",
+    botoes:[{c:"all",t:"Fotografia inteira"},{c:"ok",t:"Guardar recorte",p:1}],
+    acao:async(a,sel,cr)=>{if(!cr){toast("Escolhe uma parte da fotografia antes de guardar.");return false}
+      try{progresso("A guardar o recorte…");const im=await imgParaCanvas(sel);if(!im)throw new Error("Não consegui abrir a fotografia.");
+        const sx=Math.round(cr.x*im.naturalWidth),sy=Math.round(cr.y*im.naturalHeight),sw=Math.max(1,Math.round(cr.w*im.naturalWidth)),sh=Math.max(1,Math.round(cr.h*im.naturalHeight));
+        const cv=document.createElement("canvas");cv.width=sw;cv.height=sh;const cx=cv.getContext("2d");cx.fillStyle="#fff";cx.fillRect(0,0,sw,sh);cx.drawImage(im,sx,sy,sw,sh,0,0,sw,sh);
+        const r=await call("substituirFoto",PIN,k,id,sel,cv.toDataURL("image/jpeg",.92),me);setFoto(k,r.id,r.photo);toast("Fotografia recortada.")}
+      catch(e){toast(errMsg(e));return false}finally{progresso(null)}}})}
 function imgParaCanvas(id){return fotoBlobUrl(id,2400).then(u=>new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=u})).catch(()=>null)}
 function wrapText(ctx,t,w){const words=String(t).split(/\s+/);const lines=[];let cur="";words.forEach(wd=>{const test=cur?cur+" "+wd:wd;if(ctx.measureText(test).width>w&&cur){lines.push(cur);cur=wd}else cur=test});if(cur)lines.push(cur);return lines.length?lines:[""]}
 function rrect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}

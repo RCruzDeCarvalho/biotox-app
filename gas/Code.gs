@@ -606,3 +606,37 @@ function importarFotosIniciais(pin, lote) {
   }
   return { feitos };
 }
+
+/* Recorte: troca uma fotografia do artigo por uma versão recortada, no mesmo lugar da lista.
+   A original só vai para o lixo (recuperável 30 dias) se mais nenhum frasco ou consumível a usar,
+   porque no inventário a mesma fotografia pode servir para vários frascos. Só editores. */
+function substituirFoto(pin, kind, id, antigo, base64, quem) {
+  verificar_(pin);
+  const { sh, pasta } = folhaFoto_(kind);
+  let row = linhaDe_(sh, id);
+  if (row < 0) throw new Error('Não encontrei ' + id);
+  const nomeItem = String(sh.getRange(row, 2).getValue());
+  const f = pastaFotos_(pasta).createFile(blobFoto_(base64, nomeFicheiro_(id, nomeItem + ' (recorte)')));
+  LINK_PUBLICO_(f);
+  const lock = LockService.getScriptLock(); lock.waitLock(20000);
+  let ids;
+  try {
+    row = linhaDe_(sh, id);
+    if (row < 0) { f.setTrashed(true); throw new Error('Não encontrei ' + id); }
+    const c = colFoto_(sh);
+    ids = idsFoto_(sh.getRange(row, c).getValue());
+    const i = ids.indexOf(antigo);
+    if (i >= 0) ids[i] = f.getId(); else ids.unshift(f.getId());
+    sh.getRange(row, c).setNumberFormat('@').setValue(ids.join(','));
+    registar_(folhas_().h, id, 'Fotografia recortada', quem);
+  } finally { lock.releaseLock(); }
+  try {
+    const usada = [folhaFoto_('r').sh, consFolha_()].some(s => {
+      if (!s || s.getLastRow() < 2) return false;
+      const c = colFoto_(s);
+      return s.getRange(2, c, s.getLastRow() - 1, 1).getValues().some(v => idsFoto_(v[0]).indexOf(antigo) >= 0);
+    });
+    if (!usada) DriveApp.getFileById(antigo).setTrashed(true);
+  } catch (e) { }
+  return { id, photo: ids.join(',') };
+}
