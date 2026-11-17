@@ -150,6 +150,8 @@ a.ext:hover{background:var(--accent-soft)}
 .th{flex:none;position:relative;width:46px;height:46px;margin:8px 2px 8px 6px;border-radius:8px;border:1.5px dashed var(--line);background:transparent;padding:0;overflow:hidden;display:block;cursor:pointer;align-self:center;min-height:0}
 .th.has{border:1px solid var(--line);background:#fff}
 .ofotos{flex-basis:100%;display:flex;flex-direction:column;gap:6px;margin-top:4px}.ofotos>span{font-size:12px;color:var(--muted)}.ofotos>div{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pform{margin-bottom:6px}.pform .actions{margin:0}
+img.ocv{object-fit:contain}
 .ocv{width:80px;height:80px;border:1px solid var(--line);border-radius:8px;background:#fff}.ofsem{font-size:13px;color:var(--muted)}
 #crop{z-index:26;align-items:stretch}.cbox{background:var(--surface);color:var(--ink);width:min(720px,100%);margin:auto;max-height:100%;overflow:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 14px calc(14px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px}
 .ctop{display:flex;justify-content:space-between;align-items:center;gap:10px}.cthumbs{display:flex;gap:8px;flex-wrap:wrap}.cthumbs .th{margin:0;width:56px;height:56px}.cthumbs [aria-pressed=true]{outline:3px solid var(--accent);outline-offset:1px}
@@ -279,7 +281,7 @@ const DICT={
 "Falta a quantidade a encomendar em algum artigo.":"An item is missing the quantity to order.","Encomenda exportada":"Order exported","Encomenda":"Order",
 "Guardada no arquivo, na pasta “Encomendas exportadas” do Drive.":"Saved to the archive, in the “Encomendas exportadas” folder on Drive.","Imagem da encomenda":"Order image",
 "No telemóvel, mantém o dedo na imagem para a guardar ou partilhar.":"On a phone, press and hold the image to save or share it.","Partilhar":"Share","Descarregar":"Download","Abrir no Drive":"Open in Drive","Esvaziar a lista":"Empty the list",
-"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Recortar":"Crop","Guardar recorte":"Save crop","Fotografia recortada.":"Photo cropped.","A guardar o recorte…":"Saving the crop…","Escolhe uma parte da fotografia antes de guardar.":"Select part of the photo before saving.","Arrasta o rectângulo e os cantos até ficar só este produto. A fotografia passa a ser só a parte escolhida.":"Drag the rectangle and its corners until only this product is inside. The photo will become just the selected part.","Guardada no arquivo, na pasta “Encomendas exportadas” do Drive. A lista de encomendas foi esvaziada.":"Saved to the archive, in the “Encomendas exportadas” Drive folder. The order list has been emptied.","Este browser não deixa partilhar ficheiros. Descarrega a imagem e partilha-a a partir da galeria.":"This browser can’t share files. Download the image and share it from your gallery.","Não foi possível partilhar. Usa Descarregar.":"Could not share. Use Download instead.","Filtros":"Filters","Fotografia na encomenda":"Photo in the order","Usar esta fotografia":"Use this photo","Abrir a pasta das fotografias":"Open the photos folder","A procurar a pasta…":"Looking for the folder…","As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.":"Reagent and consumable photos are kept in Drive, in the Lab Stock › Photos folder.","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
+"Aqui não dá para partilhar directamente. Descarrega a imagem ou mantém o dedo nela.":"Sharing is not available here. Download the image or press and hold it.","Não foi possível partilhar.":"Could not share.","Guardada em Transferências › BIOTOX.":"Saved to Downloads › BIOTOX.","Não foi possível guardar. Usa Partilhar.":"Could not save. Use Share instead.","Instalar a app Android":"Install the Android app","Fotografias":"Photos","Outros pedidos":"Other requests","Escrever um pedido":"Write a request","Produto":"Product","Marca":"Brand","Referência":"Reference","Quantidade":"Quantity","Observações ou link":"Notes or link","Juntar à lista":"Add to the list","Pedido juntado à lista.":"Request added to the list.","Escreve o nome do produto.":"Write the product name.","Fotografia na encomenda (opcional)":"Photo in the order (optional)","Trocar fotografia":"Change photo","Escolher fotografia":"Choose photo","Recortar":"Crop","Guardar recorte":"Save crop","Fotografia recortada.":"Photo cropped.","A guardar o recorte…":"Saving the crop…","Escolhe uma parte da fotografia antes de guardar.":"Select part of the photo before saving.","Arrasta o rectângulo e os cantos até ficar só este produto. A fotografia passa a ser só a parte escolhida.":"Drag the rectangle and its corners until only this product is inside. The photo will become just the selected part.","Guardada no arquivo, na pasta “Encomendas exportadas” do Drive. A lista de encomendas foi esvaziada.":"Saved to the archive, in the “Encomendas exportadas” Drive folder. The order list has been emptied.","Este browser não deixa partilhar ficheiros. Descarrega a imagem e partilha-a a partir da galeria.":"This browser can’t share files. Download the image and share it from your gallery.","Não foi possível partilhar. Usa Descarregar.":"Could not share. Use Download instead.","Filtros":"Filters","Fotografia na encomenda":"Photo in the order","Usar esta fotografia":"Use this photo","Abrir a pasta das fotografias":"Open the photos folder","A procurar a pasta…":"Looking for the folder…","As fotografias dos reagentes e dos consumíveis ficam no Drive, na pasta Lab Stock › Fotografias.":"Reagent and consumable photos are kept in Drive, in the Lab Stock › Photos folder.","Ainda sem fotografias.":"No photos yet.","Escolher ficheiros":"Choose files","Tirar fotografia":"Take photo","Adicionar fotografia":"Add photo","Sem fotografia":"No photo","Ver fotografia":"View photo","Remover fotografia":"Remove photo","Remover?":"Remove?","Fotografia guardada.":"Photo saved.","Fotografia removida.":"Photo removed.","A enviar a fotografia…":"Uploading the photo…","Fotografias dos reagentes importadas.":"Reagent photos imported.","Cancelar":"Cancel","Anterior":"Previous","Seguinte":"Next","Lista esvaziada.":"List emptied.",
 "A abrir o arquivo":"Opening the archive","A ler a pasta de encomendas no Drive…":"Reading the orders folder on Drive…","Não foi possível abrir o arquivo":"Could not open the archive",
 "Encomendas exportadas, da mais recente para a mais antiga.":"Exported orders, newest first.","Abrir a pasta no Drive":"Open the folder in Drive","Ver":"View","Apagar":"Delete",
 "Ainda não há exportações":"No exports yet","Quando exportares uma encomenda, a imagem fica guardada aqui.":"When you export an order, the image is saved here.",
@@ -646,7 +648,7 @@ set:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"
 trash:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M9 7V4h6v3"/></svg>'};
 let CART=[];try{CART=JSON.parse(localStorage.getItem("btx-cart")||"[]")}catch(e){CART=[]}
 let DEFS={minDefault:1,mins:{}};let ARCH=null;
-function saveCart(){try{localStorage.setItem("btx-cart",JSON.stringify(CART))}catch(e){}updateBadge()}
+function saveCart(){try{localStorage.setItem("btx-cart",JSON.stringify(CART))}catch(e){toast("Não consegui guardar a lista neste aparelho. Tira alguma fotografia dos pedidos escritos.")}updateBadge()}
 const cartKey=(k,id)=>k+":"+id;
 const inCart=(k,id)=>CART.some(x=>cartKey(x.k,x.id)===cartKey(k,id));
 function updateBadge(){const n=CART.length;const b=$("#cartN");if(b){b.textContent=n;b.hidden=!n}
@@ -764,7 +766,7 @@ function renderHome(){const v=$("#view");$("#stat").textContent=me?`Olá, ${me}`
 function renderOrder(){const v=$("#view");
   if(v.dataset.v==="order"&&v.contains(document.activeElement)&&document.activeElement.matches("input,textarea"))return;v.dataset.v="order";
   $("#stat").textContent=CART.length===1?"1 artigo":`${CART.length} artigos`;
-  if(!CART.length){v.innerHTML=`<h2 class="ptitle">Encomendas a fazer</h2><div class="list"><div class="empty"><strong>A lista está vazia</strong>Nos Reagentes ou nos Consumíveis, marca o quadrado ao lado de cada artigo para o juntar aqui.</div></div>`;return}
+  if(!CART.length){v.innerHTML=`<h2 class="ptitle">Encomendas a fazer</h2><div class="list"><div class="empty"><strong>A lista está vazia</strong>Nos Reagentes ou nos Consumíveis, marca o quadrado ao lado de cada artigo para o juntar aqui, ou escreve um pedido em baixo.</div></div>${pedidoForm()}`;ligarPedidoForm();return}
   const grp=k=>CART.filter(x=>x.k===k);
   const sec=(k,t)=>{const L=grp(k);if(!L.length)return"";return `<h3 class="sech">${t} <span>${L.length}</span></h3><div class="list">${L.map(x=>`<div class="orow" data-key="${esc(cartKey(x.k,x.id))}">
     <div class="oname"><b>${esc(x.name)}</b><span>${esc(x.det||"")}</span></div>
@@ -772,7 +774,8 @@ function renderOrder(){const v=$("#view");
     <button class="icon del" data-del title="Tirar da lista" aria-label="Tirar da lista">${IC.trash}</button>${ofotoHTML(x)}</div>`).join("")}</div>`};
   let req="";try{req=localStorage.getItem("btx-req")||""}catch(e){}
   v.innerHTML=`<h2 class="ptitle">Encomendas a fazer</h2><p class="pintro">Escreve quanto queres encomendar de cada artigo. O stock actual não aparece na imagem.</p>
-  ${sec("r","Reagentes")}${sec("c","Consumíveis")}
+  ${sec("r","Reagentes")}${sec("c","Consumíveis")}${sec("t","Outros pedidos")}
+  ${pedidoForm()}
   <div class="form ofoot"><label>Pedido por<input id="oBy" value="${esc(me||"")}"></label><label>Para<input id="oTo" value="${esc(req||"Prof. Bernardo Duarte e Prof.ª Vanessa Fonseca")}" placeholder="Prof. Bernardo Duarte e Prof.ª Vanessa Fonseca"></label>
   <label class="full">Notas<textarea id="oNotes" rows="2" placeholder="ex. urgente, fornecedor preferido…"></textarea></label></div>
   <div class="actions"><button id="oClear">Limpar lista</button><button class="primary" id="oExp">Exportar imagem</button></div>`;
@@ -781,10 +784,27 @@ function renderOrder(){const v=$("#view");
     r.querySelector("[data-del]").onclick=()=>{CART=CART.filter(c=>cartKey(c.k,c.id)!==key);saveCart();v.dataset.v="";renderOrder()};
     const ed=r.querySelector("[data-ofed]");if(ed)ed.onclick=()=>editarFotoEnc(key);
     const cv=r.querySelector("canvas.ocv");if(cv){const x=CART.find(c=>cartKey(c.k,c.id)===key);if(x&&x.foto)desenharRecorte(cv,x.foto,x.crop)}});
+  v.querySelectorAll("[data-tfoto]").forEach(b=>b.onclick=()=>fotoPedido(b.closest(".orow").dataset.key,b.dataset.tfoto==="1"));
+  v.querySelectorAll("[data-tsem]").forEach(b=>b.onclick=()=>{const x=CART.find(c=>cartKey(c.k,c.id)===b.closest(".orow").dataset.key);if(x){x.img="";saveCart();v.dataset.v="";renderOrder()}});
+  ligarPedidoForm();
   $("#oTo").oninput=e=>{try{localStorage.setItem("btx-req",e.target.value)}catch(err){}};
   const clr=$("#oClear");clr.onclick=()=>{if(clr.dataset.ok){CART=[];saveCart();v.dataset.v="";renderOrder();return}clr.dataset.ok="1";clr.textContent="Confirmar limpar";setTimeout(()=>{if(clr.isConnected){delete clr.dataset.ok;clr.textContent=tr("Limpar lista")}},4000)};
   $("#oExp").onclick=exportOrder}
-function ofotoHTML(x){const it=itemDe(x.k,x.id);const l=fotos(it&&it.photo);
+/* Pedidos escritos: produtos que não estão na app (escreve-se o nome, marca, referência e quantidade) */
+function pedidoForm(){return `<h3 class="sech">Escrever um pedido</h3><div class="form pform">
+  <label class="full">Produto<input id="pNome" placeholder="ex. Pontas de 1000 µL com filtro" autocomplete="off"></label>
+  <label>Marca<input id="pMarca" placeholder="ex. Sarstedt" autocomplete="off"></label><label>Referência<input id="pRef" placeholder="ex. 70.762.211" autocomplete="off"></label>
+  <label>Quantidade<input id="pQtd" placeholder="ex. 2 caixas" autocomplete="off"></label><label>Observações ou link<input id="pObs" placeholder="ex. fornecedor, link do produto" autocomplete="off"></label>
+  <div class="actions full"><button type="button" class="primary" id="pAdd">Juntar à lista</button></div></div>`}
+function ligarPedidoForm(){const b=$("#pAdd");if(!b)return;b.onclick=()=>{const g=id=>$(id).value.trim();const nome=g("#pNome");if(!nome){toast("Escreve o nome do produto.");$("#pNome").focus();return}
+  CART.push({k:"t",id:"t"+Date.now().toString(36),name:nome,det:[g("#pMarca"),g("#pRef"),g("#pObs")].filter(Boolean).join(" · "),qty:g("#pQtd"),img:""});
+  saveCart();$("#view").dataset.v="";renderOrder();toast("Pedido juntado à lista.")}}
+function fotoPedido(key,cam){const inp=document.createElement("input");inp.type="file";inp.accept="image/*";if(cam)inp.setAttribute("capture","environment");
+  inp.style.cssText="position:fixed;left:-999px;opacity:0";document.body.appendChild(inp);
+  inp.onchange=async()=>{const f=inp.files&&inp.files[0];inp.remove();if(!f)return;const x=CART.find(c=>cartKey(c.k,c.id)===key);if(!x)return;
+    try{x.img=await lerImagem(f,1400);saveCart();$("#view").dataset.v="";renderOrder()}catch(e){toast(errMsg(e))}};inp.click()}
+function ofotoHTML(x){if(x.k==="t")return `<div class="ofotos"><span>Fotografia na encomenda (opcional)</span><div>${x.img?`<img class="ocv" alt="" src="${x.img}">`:""}<button type="button" data-tfoto="0">${x.img?"Trocar fotografia":"Escolher fotografia"}</button><button type="button" data-tfoto="1">Tirar fotografia</button>${x.img?`<button type="button" data-tsem>Sem fotografia</button>`:""}</div></div>`;
+  const it=itemDe(x.k,x.id);const l=fotos(it&&it.photo);
   if(!l.length)return `<div class="ofotos"><span>Sem fotografias deste artigo. Podes juntar uma na ficha dele.</span></div>`;
   if(x.foto===undefined){x.foto=l[0];saveCart()}if(x.foto&&!l.includes(x.foto)){x.foto=l[0];x.crop=null;saveCart()}
   return `<div class="ofotos"><span>Fotografia na encomenda</span><div>${x.foto?`<canvas class="ocv" width="160" height="160"></canvas>`:`<span class="ofsem">Sem fotografia</span>`}<button type="button" data-ofed>${x.foto?"Mudar ou recortar":"Escolher fotografia"}</button></div></div>`}
@@ -838,13 +858,13 @@ function recortarFoto(k,id,fid){const it=itemDe(k,id);if(!it)return;
 function imgParaCanvas(id){return fotoBlobUrl(id,2400).then(u=>new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=u})).catch(()=>null)}
 function wrapText(ctx,t,w){const words=String(t).split(/\s+/);const lines=[];let cur="";words.forEach(wd=>{const test=cur?cur+" "+wd:wd;if(ctx.measureText(test).width>w&&cur){lines.push(cur);cur=wd}else cur=test});if(cur)lines.push(cur);return lines.length?lines:[""]}
 function rrect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
-async function orderImage(by,to,notes){const EN=LANG==="en";const L=EN?{t:"Order request",items:"items",item:"item",by:"Requested by",to:"For",r:"Reagents",c:"Consumables",qty:"Quantity",it:"Item",notes:"Notes",foot:"Generated with the Stocks BIOTOX app"}:{t:"Pedido de encomenda",items:"artigos",item:"artigo",by:"Pedido por",to:"Para",r:"Reagentes",c:"Consumíveis",qty:"Quantidade",it:"Artigo",notes:"Notas",foot:"Gerado na app Stocks BIOTOX"};
+async function orderImage(by,to,notes){const EN=LANG==="en";const L=EN?{t:"Order request",items:"items",item:"item",by:"Requested by",to:"For",r:"Reagents",c:"Consumables",qty:"Quantity",it:"Item",notes:"Notes",foot:"Generated with the Stocks BIOTOX app",o:"Other requests"}:{t:"Pedido de encomenda",items:"artigos",item:"artigo",by:"Pedido por",to:"Para",r:"Reagentes",c:"Consumíveis",qty:"Quantidade",it:"Artigo",notes:"Notas",foot:"Gerado na app Stocks BIOTOX",o:"Outros pedidos"};
   const F='"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif';const W=1080,P=56,QW=230,S=2;
   const logo=await new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);const s=document.querySelector(".logo img");im.src=s?s.src:""});
   const cv=document.createElement("canvas");const ctx=cv.getContext("2d");
-  const rows=[];["r","c"].forEach(k=>{const G=CART.filter(x=>x.k===k);if(G.length){rows.push({sec:k==="r"?L.r:L.c});G.forEach(x=>rows.push(x))}});
+  const rows=[];["r","c","t"].forEach(k=>{const G=CART.filter(x=>x.k===k);if(G.length){rows.push({sec:k==="r"?L.r:k==="c"?L.c:L.o});G.forEach(x=>rows.push(x))}});
   ctx.font=`600 26px ${F}`;const PW=380,PH=420;
-  const imgs=await Promise.all(rows.map(r=>!r.sec&&r.foto?imgParaCanvas(r.foto):null));
+  const imgs=await Promise.all(rows.map(r=>r.sec?null:r.foto?imgParaCanvas(r.foto):r.img?new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=r.img}):null));
   const lay=rows.map((r,i)=>{if(r.sec)return{h:64,r};const im=imgs[i];let ph=0,pw=0,src=null;
     if(im){const c=r.crop||{x:0,y:0,w:1,h:1};src={x:c.x*im.naturalWidth,y:c.y*im.naturalHeight,w:c.w*im.naturalWidth,h:c.h*im.naturalHeight};const s=Math.min(PW/src.w,PH/src.h);pw=Math.round(src.w*s);ph=Math.round(src.h*s)}
     const nameW=W-2*P-QW-70-(im?pw+24:0);ctx.font=`600 26px ${F}`;const nl=wrapText(ctx,r.name,nameW);ctx.font=`400 20px ${F}`;const dl=r.det?wrapText(ctx,r.det,nameW):[];
