@@ -692,3 +692,14 @@ function fdsAplicar(pin, lista, quem) {
   } finally { lock.releaseLock(); }
   return { feitos };
 }
+
+/* Conteúdo dos PDFs das FDS (base64), para ler o fornecedor, a referência e o CAS. Só editores. */
+function fdsConteudo(pin, ids) {
+  verificar_(pin);
+  const pasta = pastaFdsId_();
+  return (ids || []).slice(0, 15).map(id => {
+    const f = DriveApp.getFileById(id);
+    let ok = false; const ps = f.getParents(); while (ps.hasNext()) if (ps.next().getId() === pasta) ok = true;
+    return ok ? { id, b64: Utilities.base64Encode(f.getBlob().getBytes()) } : { id, b64: '' };
+  });
+}
